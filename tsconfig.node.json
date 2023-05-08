@@ -1,0 +1,8 @@
+{
+  "extends": "./tsconfig.common.json",
+  "include": ["vite.config.ts", "vitest.config.ts", "playwright.config.ts", "package.json"],
+  "compilerOptions": {
+    "composite": true,
+    "types": ["node"]
+  }
+}

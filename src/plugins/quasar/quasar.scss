@@ -1,0 +1,14 @@
+.q-drawer {
+  background: transparent;
+}
+
+.q-item--active {
+  & .q-focus-helper {
+    background: currentColor;
+    opacity: 0.08 !important;
+  }
+
+  &:hover .q-focus-helper {
+    opacity: 0.2 !important;
+  }
+}

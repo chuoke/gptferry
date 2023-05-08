@@ -1,0 +1,41 @@
+const avatars = [
+  "/img/avatars/1.png",
+  "/img/avatars/2.png",
+  "/img/avatars/3.jpg",
+  "/img/avatars/4.jpg",
+  "/img/avatars/5.jpg",
+  "/img/avatars/6.png",
+  "/img/avatars/7.png",
+  "/img/avatars/8.png",
+  "/img/avatars/9.png",
+  "/img/avatars/10.png",
+  "/img/avatars/11.png",
+  "/img/avatars/12.jpg",
+  "/img/avatars/13.png",
+  "/img/avatars/14.png",
+  "/img/avatars/15.png",
+  "/img/avatars/16.jpg",
+  "/img/avatars/17.jpg",
+  "/img/avatars/18.jpg",
+  "/img/avatars/19.jpg",
+  "/img/avatars/20.jpg",
+  "/img/avatars/21.png",
+  "/img/avatars/22.png",
+  "/img/avatars/23.jpg",
+  "/img/avatars/24.jpg",
+  "/img/avatars/25.png",
+  "/img/avatars/26.webp",
+  "/img/avatars/27.jpg",
+  "/img/avatars/28.png",
+  "/img/avatars/29.svg",
+  "/img/avatars/30.png",
+  "/img/avatars/31.webp",
+  "/img/avatars/32.png",
+  "/img/avatars/33.jpg",
+];
+
+export const useAvatars = () => {
+  return {
+    avatars,
+  };
+};

@@ -1,0 +1,67 @@
+export interface IProvider {
+  key: string;
+  name: string;
+  avatar: string;
+  models: IProviderModel[];
+  api_base_url: string;
+  api_version: string;
+  homepage?: string;
+}
+
+export interface IProviderModel {
+  value: string;
+  label: string;
+  description: string;
+  max_token: number;
+}
+
+const providers: IProvider[] = [
+  {
+    key: "chatgpt",
+    name: "ChatGPT",
+    avatar: "/providers/chatgpt/logo.svg",
+    models: [
+      {
+        value: "gpt-4",
+        label: "gpt-4",
+        max_token: 8192,
+        description:
+          "More capable than any GPT-3.5 model, able to do more complex tasks, and optimized for chat. Will be updated with our latest model iteration.",
+      },
+      {
+        value: "gpt-3.5-turbo",
+        label: "gpt-3.5-turbo",
+        max_token: 4096,
+        description:
+          "Most capable GPT-3.5 model and optimized for chat at 1/10th the cost of text-davinci-003. Will be updated with our latest model iteration.",
+      },
+    ],
+    api_base_url: "https://api.openai.com",
+    api_version: "v1",
+    homepage: "http://openai.com",
+  },
+  // {
+  //   key: "bard",
+  //   name: "Bard",
+  //   avatar:
+  //     "https://www.gstatic.com/lamda/images/sparkle_resting_v2_1ff6f6a71f2d298b1a31.gif",
+  //   models: [],
+  //   api_base_url: "https://api.openai.com",
+  //   api_version: "v1",
+  //   homepage: "https://bard.google.com/",
+  // },
+];
+
+export const useProviders = (): {
+  providers: IProvider[];
+  find: (key: string) => IProvider | undefined;
+} => {
+  function find(key: string): IProvider | undefined {
+    return providers.find((provider) => provider.key === key);
+  }
+
+  return {
+    providers,
+    find,
+  };
+};
