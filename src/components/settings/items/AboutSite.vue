@@ -17,7 +17,7 @@
         chuoke
       </a>
       <span style="opacity: 0.7">with </span>
-      <span style="color: red">❤️</span>
+      <span>🔥❤️</span>
     </q-card-section>
   </q-card>
 </template>

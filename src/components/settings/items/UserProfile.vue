@@ -19,7 +19,7 @@
           v-model="userProfile.name"
           outlined
           dense
-          placeholder="给自个儿取个名儿"
+          :placeholder="$t('profile.name_hint')"
         />
       </q-form>
     </q-card-section>

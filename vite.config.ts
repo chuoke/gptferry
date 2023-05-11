@@ -3,7 +3,9 @@ import { fileURLToPath, URL } from "node:url";
 import AutoImport from "unplugin-auto-import/vite";
 import { defineConfig } from "vite";
 import { quasar, transformAssetUrls } from "@quasar/vite-plugin";
+import VueI18nPlugin from "@intlify/unplugin-vue-i18n/vite";
 import { version as pkgVersion } from "./package.json";
+import path from "path";
 
 process.env.VITE_APP_VERSION = pkgVersion;
 if (process.env.NODE_ENV === "production") {
@@ -33,10 +35,14 @@ export default defineConfig({
     quasar({
       sassVariables: "src/plugins/quasar/variables.sass",
     }),
+    VueI18nPlugin({
+      //
+    }),
   ],
   resolve: {
     alias: {
       "@": fileURLToPath(new URL("./src", import.meta.url)),
+      // "vue-i18n": "vue-i18n/dist/vue-i18n.runtime.esm-bundler.js",
     },
   },
   esbuild: {

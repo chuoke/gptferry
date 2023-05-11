@@ -23,11 +23,13 @@
                   class="rounded-borders"
                   @click="toEditChat(chat)"
                 >
-                  <q-item-section>编辑</q-item-section>
+                  <q-item-section>{{ $t("chat.edit") }}</q-item-section>
                 </q-item>
 
                 <q-item v-close-popup clickable class="rounded-borders">
-                  <q-item-section>清空聊天记录</q-item-section>
+                  <q-item-section>
+                    {{ $t("message.clear") }}
+                  </q-item-section>
                 </q-item>
 
                 <q-separator spaced />
@@ -38,7 +40,7 @@
                   class="rounded-borders"
                   @click="toDeleteChat(chat)"
                 >
-                  <q-item-section>删除</q-item-section>
+                  <q-item-section>{{ $t("chat.delete") }}</q-item-section>
                 </q-item>
               </q-list>
             </q-menu>
@@ -55,11 +57,13 @@ import ChatListItem from "@/components/chat/ChatListItem.vue";
 import { useChatFormDialog } from "@/composables/chat-form-dialog";
 import type { IChat } from "@/composables/chats";
 import { useQuasar } from "quasar";
+import { useI18n } from "vue-i18n";
 
 defineProps<{ chats: IChat[]; actvieKey: string }>();
 const emits = defineEmits(["clicked", "deleted"]);
 
 const $q = useQuasar();
+const { t: translate } = useI18n();
 
 function handleClick(chat: IChat) {
   emits("clicked", chat);
@@ -73,8 +77,8 @@ function toEditChat(chat: IChat) {
 
 function toDeleteChat(chat: IChat) {
   $q.dialog({
-    title: "确认操作",
-    message: "确认要删除该聊天吗？删除后所有聊天记录将被清除且不可恢复。",
+    title: translate("common.confirm_action"),
+    message: translate("chat.delete_confirm"),
     cancel: true,
   }).onOk(() => {
     emits("deleted", chat);

@@ -1,0 +1,63 @@
+export default {
+  common: {
+    fullscreen: "全屏",
+    exit_fullscreen: "退出全屏",
+    cancel: "取消",
+    save: "保存",
+    confirm_action: "确认操作",
+  },
+  server: {
+    new: "新建服务",
+    edit: "编辑服务",
+    delete: "删 除",
+    delete_confirm:
+      "确认要删除该服务吗？删除后所有聊天记录将被清除且不可恢复。",
+    name: "名称",
+    model: "模型",
+    setting: "设置",
+    api_key_empty_notice: "请填写一个 API Key",
+    api_base_url: "接口基础地址",
+    api_base_url_hint: "如果你修改它，应该知道为什么",
+  },
+  chat: {
+    new: "新建聊天",
+    edit: "编辑聊天",
+    delete: "删 除",
+    delete_confirm:
+      "确认要删除该聊天吗？删除后所有聊天记录将被清除且不可恢复。",
+    clear_all: "清空聊天",
+    clear_all_confirm:
+      "确认要清除所有聊天吗？清除后所有聊天和消息都将被清除且不可恢复。",
+    name: "称呼",
+    name_hint: "给TA取个名儿",
+    name_fill_empty: "未命名对话",
+    system_prompt: "系统提示词",
+    system_prompt_hint: "设定系统提示词，用于设定角色，可以更好的获取答案",
+    system_prompt_default: "作为私人助理解决所提出的问题",
+    carried_message_count: "携带历史消息条数",
+    carried_message_count_hint: "不宜设置过大，默认值为 10",
+    probability_mass: "概率质量",
+    probability_mass_hint: "0~1，值越大结果越随机",
+    model: "模型",
+    model_hint: "不选则使用服务默认模型",
+  },
+  message: {
+    clear: "清除聊天记录",
+    clear_confirm: "确认要清空聊天记录吗？清除后不可恢复。",
+    copy: "复制",
+    copy_success: "内容已复制",
+    cipy_failed: "内容复制失败",
+    delele: "删除",
+    delete_confirm: "确认要删除该条记录吗?",
+    view_empty_msg: "创建服务和聊天，开始从AI获取灵感和帮助",
+  },
+  setting: {
+    profile: "个人信息",
+    about: "关 于",
+    language: "语言",
+    general: "通用",
+  },
+  profile: {
+    name_hint: "给自个儿取个名儿",
+  },
+};

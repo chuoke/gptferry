@@ -33,11 +33,11 @@
                 <!-- :ratio="16 / 9" -->
                 <q-img
                   :src="bg"
-                  style="width: 500px; max-width: 80%;"
+                  style="width: 500px; max-width: 80%"
                   class="q-mb-lg"
                 ></q-img>
                 <p class="text-subtitle1">
-                  创建服务和聊天，开始从AI获取灵感和帮助
+                  {{ $t("message.view_empty_msg") }}
                 </p>
               </div>
             </div>

@@ -1,7 +1,9 @@
 <template>
   <q-card style="width: 500px">
     <q-card-section class="row items-center q-pb-none">
-      <div class="text-h6">{{ isEdit ? "编辑" : "新增" }}聊天</div>
+      <div class="text-h6">
+        {{ isEdit ? $t("chat.edit") : $t("chat.new") }}
+      </div>
       <q-space />
       <q-btn v-close-popup icon="close" flat round dense @click="cancel" />
     </q-card-section>
@@ -31,10 +33,8 @@
           v-model="modelValue.name"
           outlined
           dense
-          label="称呼"
-          placeholder="给TA取个名儿"
-          lazy-rules
-          :rules="[(val) => (val && val.length > 0) || 'Please type something']"
+          :label="$t('chat.name')"
+          :placeholder="$t('chat.name_hint')"
         />
 
         <q-input
@@ -42,8 +42,8 @@
           outlined
           dense
           autogrow
-          label="系统提示词"
-          hint="设定系统提示词，用于设定角色，可以更好的获取答案"
+          :label="$t('chat.system_prompt')"
+          :hint="$t('chat.system_prompt_hint')"
         />
 
         <q-input
@@ -51,8 +51,8 @@
           outlined
           dense
           type="number"
-          label="携带历史消息条数"
-          hint="不宜设置过大，默认值为 10"
+          :label="$t('chat.carried_message_count')"
+          :hint="$t('chat.carried_message_count_hint')"
         />
 
         <q-input
@@ -60,11 +60,11 @@
           outlined
           dense
           type="number"
-          label="概率质量"
           :step="0.1"
           :max="1"
           :min="0"
-          hint="0~1，值越大结果越随机"
+          :label="$t('chat.probability_mass')"
+          :hint="$t('chat.probability_mass_hint')"
         />
 
         <q-select
@@ -74,8 +74,8 @@
           dense
           clearable
           emit-value
-          label="模型"
-          hint="不选则使用服务默认模型"
+          :label="$t('chat.model')"
+          :hint="$t('chat.model_hint')"
         >
           <template #option="scope">
             <q-item v-bind="scope.itemProps" style="max-width: 500px">
@@ -90,8 +90,8 @@
     </q-card-section>
 
     <q-card-actions align="right" class="bg-second q-px-xl">
-      <q-btn flat label="取消" @click="cancel" />
-      <q-btn label="保存" color="primary" @click="save" />
+      <q-btn :label="$t('common.cancel')" flat @click="cancel" />
+      <q-btn :label="$t('common.save')" color="primary" @click="save" />
     </q-card-actions>
   </q-card>
 </template>
@@ -100,6 +100,7 @@
 import { useAvatars } from "@/composables/avatars";
 import { type IChat } from "@/composables/chats";
 import type { IProviderModel } from "@/composables/providers";
+import { useI18n } from "vue-i18n";
 
 const props = defineProps<{
   models: IProviderModel[];
@@ -107,6 +108,8 @@ const props = defineProps<{
 }>();
 const emits = defineEmits(["save", "cancel"]);
 const modelValue = ref<Partial<IChat>>({});
+
+const { t: translate } = useI18n();
 
 watch(
   () => props.chat,
@@ -121,7 +124,7 @@ watch(
       !modelValue.value.system_prompt &&
       (!("key" in modelValue.value) || !modelValue.value.key)
     ) {
-      modelValue.value.system_prompt = "作为私人助理解决所提出的问题";
+      modelValue.value.system_prompt = translate("chat.system_prompt_default");
     }
   },
   {

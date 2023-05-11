@@ -105,7 +105,11 @@ const { settingDialogOpen, open: openSettingDialog } = useSettingDialog();
           dense
           flat
           :icon="$q.fullscreen.isActive ? 'fullscreen_exit' : 'crop_square'"
-          :title="$q.fullscreen.isActive ? '退出全屏' : '全屏'"
+          :title="
+            $q.fullscreen.isActive
+              ? $t('common.exit_fullscreen')
+              : $t('common.fullscreen')
+          "
           @click="$q.fullscreen.toggle()"
         />
       </q-bar>
@@ -128,7 +132,7 @@ const { settingDialogOpen, open: openSettingDialog } = useSettingDialog();
 
           <div class="text-center">
             <q-btn
-              title="新建服务"
+              :title="$t('server.new')"
               icon="add"
               color="white"
               text-color="primary"

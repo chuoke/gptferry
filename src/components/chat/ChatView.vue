@@ -58,7 +58,7 @@
                   @click="openServerForm(server)"
                 >
                   <q-item-section>
-                    <q-item-label>设置</q-item-label>
+                    <q-item-label>{{ $t("server.setting") }}</q-item-label>
                   </q-item-section>
                   <q-item-section side>
                     <q-icon name="settings" size="xs" />
@@ -72,7 +72,7 @@
                   @click="toAddChat"
                 >
                   <q-item-section>
-                    <q-item-label>新增聊天</q-item-label>
+                    <q-item-label>{{ $t("chat.new") }}</q-item-label>
                   </q-item-section>
                   <q-item-section side>
                     <q-icon name="add_comment" size="xs" />
@@ -88,7 +88,7 @@
                   @click="toDeleteServer"
                 >
                   <q-item-section>
-                    <q-item-label>删除</q-item-label>
+                    <q-item-label>{{ $t("server.delete") }}</q-item-label>
                   </q-item-section>
                   <q-item-section side>
                     <q-icon name="delete" size="xs" color="negative"></q-icon>
@@ -144,16 +144,20 @@
 
         <q-footer class="bg-second-alt text-second-alt">
           <q-toolbar class="bg-second-alt text-second-alt">
-            <q-btn
-              flat
-              color="negative"
-              icon="clear_all"
-              label="清空"
-              @click="toClearChat"
-            />
+            <q-btn flat color="negative" icon="clear_all" @click="toClearChat">
+              <q-tooltip>
+                {{ $t("chat.clear_all") }}
+              </q-tooltip>
+            </q-btn>
+
             <q-space></q-space>
-            <q-btn icon="add" outline color="primary" @click="toAddChat">
-              创建新聊天
+            <q-btn
+              icon="add"
+              outline
+              color="primary"
+              :label="$t('chat.new')"
+              @click="toAddChat"
+            >
             </q-btn>
           </q-toolbar>
         </q-footer>
@@ -207,6 +211,7 @@ import { useServerFormDialog } from "@/composables/server-form-dialog";
 import { useChatFormDialog } from "@/composables/chat-form-dialog";
 import MessageEmptyView from "@/components/message/MessageEmptyView.vue";
 import { useLeftDrawer } from "@/composables/left-drawer";
+import { useI18n } from "vue-i18n";
 
 const props = defineProps<{
   server: IServer;
@@ -216,6 +221,7 @@ const emits = defineEmits(["deleted"]);
 const { chatMenuDrawerOpen, open: openLeftDrawer } = useLeftDrawer();
 
 const $q = useQuasar();
+const { t: translate } = useI18n();
 
 const { find: findProvider } = useProviders();
 const provider = computed(() => {
@@ -247,8 +253,8 @@ function toAddChat() {
 
 function toDeleteServer() {
   $q.dialog({
-    title: "确认操作",
-    message: "确认要删除该服务吗？删除后所有聊天记录将被清除且不可恢复。",
+    title: translate("common.confirm_action"),
+    message: translate("server.delete_confirm"),
     cancel: true,
   }).onOk(() => {
     emits("deleted", props.server);
@@ -271,8 +277,8 @@ function saveChat(val: Partial<IChat>) {
 
 function toClearChat() {
   $q.dialog({
-    title: "确认操作",
-    message: "确认要清除所有聊天吗？清除后所有聊天和消息都将被清除。",
+    title: translate("common.confirm_action"),
+    message: translate("chat.clear_all_confirm"),
     cancel: true,
   }).onOk(() => {
     clearChat();

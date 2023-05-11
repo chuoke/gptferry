@@ -26,12 +26,17 @@
 
       <q-list class="q-pa-sm">
         <setting-item
-          label="个人信息"
+          :label="$t('setting.profile')"
           :active="activeSettingTab === 'profile'"
           @click="changeTab('profile')"
         ></setting-item>
         <setting-item
-          label="关 于"
+          :label="$t('setting.general')"
+          :active="activeSettingTab === 'general'"
+          @click="changeTab('general')"
+        ></setting-item>
+        <setting-item
+          :label="$t('setting.about')"
           :active="activeSettingTab === 'about'"
           @click="changeTab('about')"
         ></setting-item>
@@ -49,6 +54,10 @@
             <UserProfile />
           </q-tab-panel>
 
+          <q-tab-panel name="general" style="min-height: 100%">
+            <GeneralSetting />
+          </q-tab-panel>
+
           <q-tab-panel name="about" style="min-height: 100%">
             <AboutSite />
           </q-tab-panel>
@@ -63,6 +72,7 @@ import { ref } from "vue";
 import SettingItem from "@/components/settings/SettingItem.vue";
 import AboutSite from "@/components/settings/items/AboutSite.vue";
 import UserProfile from "@/components/settings/items/UserProfile.vue";
+import GeneralSetting from "@/components/settings/items/GeneralSetting.vue";
 import { useSettingDialog } from "@/composables/setting-dialog";
 
 const leftDrawerOpen = ref(true);

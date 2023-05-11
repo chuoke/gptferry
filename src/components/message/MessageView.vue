@@ -18,7 +18,7 @@
         />
 
         <q-toolbar-title class="q-ml-sm">
-          # {{ chat?.name || "未命名" }}
+          # {{ chat?.name || $t("chat.name_fill_empty") }}
 
           <small class="text-caption">-- {{ chat.system_prompt }}</small>
         </q-toolbar-title>
@@ -27,7 +27,7 @@
           dense
           flat
           icon="clear_all"
-          title="清除所有聊天记录"
+          :title="$t('message.clear')"
           @click="toClearMessages"
         ></q-btn>
         <q-btn dense flat round icon="menu" />
@@ -109,7 +109,9 @@
                           class="rounded q-px-xs"
                           @click="toCopyContent(message.content)"
                         >
-                          <q-item-section>复制</q-item-section>
+                          <q-item-section>
+                            {{ $t("message.copy") }}
+                          </q-item-section>
                           <q-item-section side>
                             <q-icon name="content_copy" size="xs"></q-icon>
                           </q-item-section>
@@ -120,7 +122,9 @@
                           class="rounded q-px-xs"
                           @click="toDeleteMessage(message)"
                         >
-                          <q-item-section>删除</q-item-section>
+                          <q-item-section>
+                            {{ $t("message.delete") }}
+                          </q-item-section>
                           <q-item-section side>
                             <q-icon name="delete_forever" size="xs"></q-icon>
                           </q-item-section>
@@ -178,12 +182,14 @@ import {
 } from "@vueuse/core";
 import { useUserProfile } from "@/composables/user";
 import { useLeftDrawer } from "@/composables/left-drawer";
+import { useI18n } from "vue-i18n";
 
 const props = defineProps<{
   chat: IChat;
 }>();
 
 const $q = useQuasar();
+const { t: translate } = useI18n();
 const { open: openLeftDrawer } = useLeftDrawer();
 
 // const rightDrawerOpen = ref(true);
@@ -249,8 +255,8 @@ const scrollToBottom = throttle(function (force?: boolean) {
 
 function toClearMessages() {
   $q.dialog({
-    title: "确认操作",
-    message: "确认要清空聊天记录吗？清除后不可恢复。",
+    title: translate("common.confirm_action"),
+    message: translate("message.clear_confirm"),
     cancel: true,
   }).onOk(() => {
     clearMessages();
@@ -259,8 +265,8 @@ function toClearMessages() {
 
 function toDeleteMessage(message: IMessage) {
   $q.dialog({
-    title: "确认操作",
-    message: "确认要删除该条记录吗?",
+    title: translate("common.confirm_action"),
+    message: translate("message.delete_confirm"),
     cancel: true,
   }).onOk(() => {
     removeMessage(message.key);
@@ -270,10 +276,16 @@ function toDeleteMessage(message: IMessage) {
 function toCopyContent(content: string) {
   copyToClipboard(content)
     .then(() => {
-      $q.notify({ message: "内容已复制", type: "success" });
+      $q.notify({
+        message: translate("message.copy_success"),
+        type: "success",
+      });
     })
     .catch(() => {
-      $q.notify({ message: "内容复制失败", type: "nagetive" });
+      $q.notify({
+        message: translate("message.copy_failed"),
+        type: "nagetive",
+      });
     });
 }
 
@@ -282,7 +294,10 @@ const chatProvider = useAI(currentServer.value?.provider_key as string);
 
 async function toSendMessage() {
   if (!currentServer.value?.api_key) {
-    $q.notify({ type: "negative", message: "请填写一个 API Key" });
+    $q.notify({
+      type: "negative",
+      message: translate("server.api_key_empty_notice"),
+    });
     openServerForm(currentServer.value);
     return;
   }

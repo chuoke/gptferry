@@ -1,7 +1,11 @@
 <template>
   <q-card style="width: 500px">
     <q-card-section class="row items-center q-pb-none">
-      <div class="text-h6">{{ modelValue.key ? "编辑" : "新建" }}服务</div>
+      <div class="text-h6">
+        {{
+          modelValue.key ? $t("server.edit") : $t("server.new")
+        }}
+      </div>
       <q-space />
       <q-btn v-close-popup icon="close" flat round dense @click="cancel" />
     </q-card-section>
@@ -43,7 +47,6 @@
               size="xs"
               icon="arrow_back"
               round
-              title="重新选择"
               @click="toReselectProvider"
             >
             </q-btn>
@@ -64,7 +67,12 @@
               </q-avatar>
             </div>
 
-            <q-input v-model="modelValue.name" outlined dense label="名称" />
+            <q-input
+              v-model="modelValue.name"
+              outlined
+              dense
+              :label="$t('server.name')"
+            />
 
             <q-select
               v-model="modelValue.model"
@@ -72,7 +80,7 @@
               outlined
               dense
               clearable
-              label="模型"
+              :label="$t('server.model')"
               emit-value
             >
               <template #option="scope">
@@ -121,10 +129,10 @@
               v-model="modelValue.api_base_url"
               outlined
               dense
-              label="接口地址"
+              :label="$t('server.api_base_url')"
               :type="showApiBaseUrl ? 'text' : 'password'"
               :placeholder="selectedProvider?.api_base_url || ''"
-              hint="如果你修改它，应该知道为什么"
+              :hint="$t('server.api_base_url_hint')"
             >
               <template #append>
                 <q-icon
@@ -141,8 +149,8 @@
     </q-card-section>
 
     <q-card-actions align="right" class="bg-second q-px-xl">
-      <q-btn flat label="取消" @click="cancel" />
-      <q-btn label="保存" color="primary" @click="toSave" />
+      <q-btn :label="$t('common.cancel')" flat @click="cancel" />
+      <q-btn :label="$t('common.save')" color="primary" @click="toSave" />
     </q-card-actions>
   </q-card>
 </template>
