@@ -21,6 +21,9 @@ export const useThemeMode = (): {
       //     $q.dark.set(val === true);
       //   }
       $q.dark.set(val === "auto" ? val : val === "dark");
+    },
+    {
+      immediate: true,
     }
   );
 
