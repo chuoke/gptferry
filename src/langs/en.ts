@@ -51,7 +51,7 @@ export default {
     copy_success: "Content copied",
     cipy_failed: "Content copy failure",
     copy: "Copy",
-    delele: "Delete",
+    delete: "Delete",
     delete_confirm: "Are you sure you want to delete this record?",
     view_empty_msg:
       "Create server and chating, start getting inspiration and help from AI",
