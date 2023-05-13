@@ -28,6 +28,7 @@ const htmlStr = computed(() => {
 });
 
 const md = new MarkdownIt({
+  breaks: true,
   highlight: function (str, lang) {
     let highlightedText = "";
 

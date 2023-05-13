@@ -370,7 +370,8 @@ async function toSendMessage() {
 
 function newline() {
   if (inputMessage.value) {
-    inputMessage.value += "\n";
+    // inputMessage.value += "\n";
+    inputMessage.value += String.fromCharCode(13, 10);
   }
 }
 </script>
