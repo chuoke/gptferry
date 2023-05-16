@@ -1,20 +1,24 @@
-import { useStorage, type RemovableRef } from "@vueuse/core";
 import { useMessages } from "./messages";
 import { nanoid } from "nanoid";
+import { useDB } from "@/composables/db";
+import { useObservable } from "@vueuse/rxjs";
+import { liveQuery } from "dexie";
 
 export interface IChat {
   key: string;
   name: string;
+  avatar?: string;
   server_key: string;
+  provider_key?: string;
   model: string;
   system_prompt: string;
-  avatar?: string;
   probability_mass: number; // 概率质量
   carried_message_count: number;
   used_at: number; // unix timestamp
   created_at: number; // unix timestamp
   updated_at: number; // unix timestamp
 }
+
 export type IChatNew = Pick<
   IChat,
   | "name"
@@ -28,20 +32,44 @@ export type IChatNew = Pick<
 export const useChats = (
   serverKey: string
 ): {
-  chats: RemovableRef<IChat[]>;
-  activeChatKey: RemovableRef<string>;
-  add: (chat: IChatNew) => IChat;
-  update: (chat: IChat) => IChat;
-  remove: (key: string) => void;
-  clear: () => void;
+  chats: Ref<IChat[]>;
+  activeChatKey: ComputedRef<string>;
+  add: (chat: IChatNew) => Promise<IChat>;
+  update: (chat: IChat) => Promise<IChat>;
+  remove: (key: string) => Promise<void>;
+  clear: () => Promise<void>;
+  active: (chat: IChat) => Promise<void>;
 } => {
-  const chats = useStorage<IChat[]>(`server_chats_${serverKey}`, []);
-  const activeChatKey = useStorage<string>(
-    `server_active_chat_key_${serverKey}`,
-    chats.value.length ? chats.value[0].key : ""
-  );
+  const { db } = useDB();
 
-  const add = (chat: IChatNew): IChat => {
+  const chats = useObservable(
+    liveQuery(() => {
+      return db.chats
+        .where({ server_key: serverKey })
+        .toArray((items: IChat[]) => {
+          console.log(`items ${serverKey}`, items);
+
+          return items;
+        });
+    }) as any,
+    {
+      initialValue: [],
+    }
+  ) as Readonly<Ref<IChat[]>>;
+
+  const activeChat = computed(() => {
+    return chats.value.reduce(
+      (actived, item) =>
+        (actived = !actived || item.used_at > actived.used_at ? item : actived),
+      null as unknown as IChat
+    );
+  });
+
+  const activeChatKey = computed(() => {
+    return activeChat.value ? activeChat.value.key : "";
+  });
+
+  const add = async (chat: IChatNew): Promise<IChat> => {
     const newChat = {
       key: nanoid(),
       name: chat.name,
@@ -55,39 +83,53 @@ export const useChats = (
       updated_at: Date.now() / 1000,
       created_at: Date.now() / 1000,
     };
-    chats.value.push(newChat);
+
+    await db.chats.add({ ...newChat });
 
     return newChat;
   };
 
-  const update = (chat: IChat): IChat => {
+  const update = async (chat: IChat): Promise<IChat> => {
     const index = chats.value.findIndex((item) => item.key === chat.key);
     if (0 > index) {
       throw new Error("对话不存在");
     }
 
-    chats.value.splice(index, 1, { ...chat, updated_at: Date.now() / 1000 });
+    chat.updated_at = Date.now() / 1000;
+
+    await db.chats.update(chat.key, { ...chat });
 
     return chat;
   };
 
-  function remove(key: string) {
-    const index = chats.value.findIndex((chat) => chat.key === key);
-    if (index > -1) {
-      const deletedChat = chats.value.splice(index, 1);
-
-      const { clear: clearMessages } = useMessages(deletedChat[0]);
-      clearMessages();
+  async function remove(key: string) {
+    const removeChat = chats.value.find((chat) => chat.key === key);
+    if (!removeChat) {
+      return;
     }
+
+    await clearMessages(removeChat);
+
+    await db.chats.delete(key);
   }
 
-  function clear() {
-    chats.value.forEach((chat) => {
-      const { clear: clearMessages } = useMessages(chat);
-      clearMessages();
+  async function clear() {
+    chats.value.forEach(async (chat) => {
+      await clearMessages(chat);
     });
 
-    chats.value = [];
+    await db.chats.where({ server_key: serverKey }).delete();
+  }
+
+  async function clearMessages(chat: IChat) {
+    const { clear: clearMessages } = useMessages(chat);
+    await clearMessages();
+  }
+
+  async function active(chat: IChat) {
+    chat.used_at = Date.now() / 1000;
+
+    await update(chat);
   }
 
   return {
@@ -97,5 +139,6 @@ export const useChats = (
     update,
     remove,
     clear,
+    active,
   };
 };

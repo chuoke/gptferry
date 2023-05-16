@@ -2,7 +2,7 @@ import { isNumber } from "lodash-es";
 import type { IChatOptions } from "./types";
 
 export default (): {
-  chat: (options: IChatOptions) => void;
+  chat: (options: IChatOptions) => Promise<void>;
 } => {
   const baseApiUrl = "https://api.openai.com";
 
@@ -57,14 +57,14 @@ export default (): {
 
     const stream = response.body;
     if (!stream) {
-      throw new Error("未知错误");
+      throw new Error("Unknown Error");
     }
 
     const reader = stream.getReader();
     const decoder = new TextDecoder("utf-8");
     function readStream() {
       reader.read().then(({ done, value }) => {
-        if (done)  {
+        if (done) {
           options.onUpdate("", { done: true });
           return;
         }

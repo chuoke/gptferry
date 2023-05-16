@@ -3,13 +3,22 @@
     view="hHh lpR fFr"
     container
     style="height: calc(100vh - 24px)"
-    class="bg-first text-first"
+    class="bg-first text-first message-empty-view"
   >
-    <q-header bordered class="shadow-sm bg-first text-first">
+    <q-header class="shadow-md bg-first text-first">
       <q-toolbar>
-        <q-btn dense flat round icon="menu" />
+        <q-btn
+          dense
+          flat
+          round
+          icon="menu"
+          class="lt-sm"
+          @click="openLeftDrawer()"
+        />
 
         <q-toolbar-title> </q-toolbar-title>
+
+        <q-space></q-space>
       </q-toolbar>
     </q-header>
 
@@ -49,6 +58,10 @@
 </template>
 
 <script setup lang="ts">
+import { useLeftDrawer } from "@/composables/left-drawer";
+
+const { open: openLeftDrawer } = useLeftDrawer();
+
 const bgs = [
   "/img/illustrations/empty-message-page-bg.png",
   "/img/illustrations/empty-message-page-bg-2.png",
@@ -60,22 +73,24 @@ const bg = computed(() => {
 </script>
 
 <style lang="scss">
-.message-scrollarea .q-scrollarea__content {
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  justify-content: center;
-}
+.message-empty-view {
+  .message-scrollarea .q-scrollarea__content {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: center;
+  }
 
-.q-message-container > div {
-  max-width: 80%;
-}
+  .q-message-container > div {
+    max-width: 80%;
+  }
 
-.q-message-text {
-  padding-bottom: 1px !important;
+  .q-message-text {
+    padding-bottom: 1px !important;
 
-  &:last-child {
-    min-height: unset !important;
+    &:last-child {
+      min-height: unset !important;
+    }
   }
 }
 </style>

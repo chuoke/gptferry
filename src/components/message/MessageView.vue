@@ -6,7 +6,7 @@
     style="height: calc(100vh - 24px)"
     class="bg-first text-first"
   >
-    <q-header bordered class="shadow-sm bg-first text-first">
+    <q-header class="shadow-1 bg-first text-first">
       <q-toolbar>
         <q-btn
           dense
@@ -73,7 +73,7 @@
                     v-if="message.role !== 'user'"
                     class="q-message-avatar q-message-avatar--received"
                   >
-                    <img :src="chat.avatar" />
+                    <img :src="chat.avatar || currentServer?.avatar" />
                   </q-avatar>
                   <q-avatar
                     v-else
@@ -93,13 +93,12 @@
                     :loading="message.key === loadingMsgKey"
                   ></markdown-message>
 
-                  <q-btn
+                  <q-icon
                     size="xs"
-                    icon="more_vert"
-                    flat
-                    round
-                    class="q-pa-none absolute-bottom-right"
-                    style="opacity: 0.7"
+                    name="more_horiz"
+                    right
+                    class="q-pa-none absolute-bottom-right text-caption text-weight-light cursor-pointer"
+                    style="opacity: 0.6; font-size: 14px;"
                   >
                     <q-menu>
                       <q-list dense style="min-width: 150px" class="q-pa-sm">
@@ -131,7 +130,7 @@
                         </q-item>
                       </q-list>
                     </q-menu>
-                  </q-btn>
+                  </q-icon>
                 </div>
               </q-chat-message>
             </div>
@@ -173,7 +172,6 @@ import { useServers, type IServer } from "@/composables/servers";
 import { useQuasar, copyToClipboard, QScrollArea, throttle } from "quasar";
 // import PromptTips from "@/components/prompt/prompt-tips.vue";
 import { useAI } from "@/ai";
-import { nanoid } from "nanoid";
 import MarkdownMessage from "@/components/message/MarkdownMessage.vue";
 import { useServerFormDialog } from "@/composables/server-form-dialog";
 import {
@@ -201,6 +199,8 @@ const {
   messages,
   clear: clearMessages,
   remove: removeMessage,
+  add: addMessage,
+  finish: finishMessage,
 } = useMessages(props.chat);
 const { open: openServerForm } = useServerFormDialog();
 const { servers } = useServers();
@@ -308,6 +308,22 @@ async function toSendMessage() {
 
   loadingMsgKey.value = "...";
 
+  const carries = messages.slice(-(props.chat.carried_message_count || 10));
+
+  await addMessage({
+    finished: true,
+    role: "user",
+    content: inputMessage.value,
+    model: props.chat.model || currentServer.value.model,
+  });
+
+  const receivedMessage = await addMessage({
+    finished: false,
+    role: "assistant",
+    content: "",
+    model: props.chat.model || currentServer.value.model,
+  });
+
   const chatOptions = {
     message: inputMessage.value,
     model: currentServer.value.model,
@@ -316,42 +332,29 @@ async function toSendMessage() {
       currentServer.value.provider?.api_base_url ||
       "",
     api_key: currentServer.value.api_key,
-    carries: messages.value.slice(-(props.chat.carried_message_count || 10)),
+    carries: carries,
     system_prompt: props.chat.system_prompt,
     probability_mass: props.chat.probability_mass,
     onUpdate: (content: string, options: { done: boolean }) => {
-      messages.value[messages.value.length - 1].content += content;
+      messages[messages.length - 1].content += content;
+      receivedMessage.content += content;
+
+      scrollToBottom();
       const { done } = options;
       if (done) {
         loadingMsgKey.value = "";
+
+        if (!receivedMessage.finished) {
+          receivedMessage.finished = true;
+          finishMessage(receivedMessage);
+        }
       }
-      scrollToBottom();
     },
   };
 
-  messages.value.push({
-    key: nanoid(),
-    role: "user",
-    content: inputMessage.value,
-    chat_key: props.chat.key,
-    server_key: props.chat.server_key,
-    created_at: Date.now() / 1000,
-    model: currentServer.value.model,
-  });
-
   scrollToBottom();
 
-  messages.value.push({
-    key: nanoid(),
-    role: "assistant",
-    content: "",
-    chat_key: props.chat.key,
-    server_key: props.chat.server_key,
-    created_at: Date.now() / 1000,
-    model: currentServer.value.model,
-  });
-
-  loadingMsgKey.value = messages.value[messages.value.length - 1].key;
+  loadingMsgKey.value = messages[messages.length - 1].key;
 
   inputMessage.value = "";
 
@@ -362,7 +365,7 @@ async function toSendMessage() {
       message: "message" in err ? err.message : err,
       type: "negative",
     });
-    messages.value[messages.value.length - 1].content += " ";
+    messages[messages.length - 1].content += " ";
   } finally {
     loadingMsgKey.value = "";
   }

@@ -1,5 +1,5 @@
 <template>
-  <q-list class="rounded-borders px-1">
+  <q-list class="rounded-borders q-px-sm">
     <transition-group
       appear
       enter-active-class="animated fadeIn"

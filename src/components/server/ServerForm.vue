@@ -2,9 +2,7 @@
   <q-card style="width: 500px">
     <q-card-section class="row items-center q-pb-none">
       <div class="text-h6">
-        {{
-          modelValue.key ? $t("server.edit") : $t("server.new")
-        }}
+        {{ modelValue.key ? $t("server.edit") : $t("server.new") }}
       </div>
       <q-space />
       <q-btn v-close-popup icon="close" flat round dense @click="cancel" />
@@ -158,7 +156,7 @@
 <script setup lang="ts">
 import { useProviders, type IProvider } from "@/composables/providers";
 import { useServers, type IServer } from "@/composables/servers";
-import type { QForm } from "quasar";
+import { useQuasar, type QForm } from "quasar";
 
 const props = defineProps<{ server?: IServer | null }>();
 const emits = defineEmits(["cancelled", "saved"]);
@@ -169,6 +167,7 @@ const selectedProvider = ref<IProvider>();
 const modelValue = ref<Partial<IServer>>({});
 const showApiKey = ref(false);
 const showApiBaseUrl = ref(false);
+const $q = useQuasar();
 
 watch(
   () => props.server,
@@ -248,17 +247,22 @@ async function save() {
 
   saving.value = true;
 
-  const { save: saveServer } = useServers();
+  try {
+    const { save: saveServer } = useServers();
 
-  await saveServer({
-    ...modelValue.value,
-    provider_key: selectedProvider.value.key,
-    name: modelValue.value.name as string,
-    avatar: modelValue.value.avatar as string,
-  });
+    await saveServer({
+      ...modelValue.value,
+      provider_key: selectedProvider.value.key,
+      name: modelValue.value.name as string,
+      avatar: modelValue.value.avatar as string,
+    });
 
-  emits("saved");
-
-  saving.value = false;
+    emits("saved");
+  } catch (err: any) {
+    console.log({ err });
+    $q.notify({ message: err.message || err, type: "negative" });
+  } finally {
+    saving.value = false;
+  }
 }
 </script>

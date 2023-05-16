@@ -7,7 +7,7 @@ import { computed } from "vue";
 import MarkdownIt from "markdown-it";
 import hljs from "highlight.js";
 import "highlight.js/styles/atom-one-dark.css";
-import { copyToClipboard, useQuasar } from "quasar";
+import { copyToClipboard } from "quasar";
 
 const props = withDefaults(
   defineProps<{
@@ -18,8 +18,6 @@ const props = withDefaults(
     loading: false,
   }
 );
-
-const $q = useQuasar();
 
 const htmlStr = computed(() => {
   return (

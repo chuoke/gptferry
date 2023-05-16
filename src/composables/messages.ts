@@ -1,5 +1,6 @@
-import { useStorage, type RemovableRef } from "@vueuse/core";
-import type { IChat } from "./chats";
+import type { IChat } from "@/composables/chats";
+import { useDB } from "@/composables/db";
+import { nanoid } from "nanoid";
 
 export interface IMessage {
   key: string;
@@ -7,39 +8,108 @@ export interface IMessage {
   chat_key: string;
   server_key: string;
   created_at: number; // unix timestamp
+  updated_at: number;
   model: string;
   role: string;
+  finished: boolean;
+  favorited?: boolean;
   [key: string]: any;
 }
+
+const pageSize = 100;
 
 export const useMessages = (
   chat: IChat
 ): {
-  messages: RemovableRef<IMessage[]>;
-  add: (message: IMessage) => void;
-  remove: (key: string) => void;
-  clear: () => void;
+  messages: IMessage[];
+  add: (message: Partial<IMessage>) => Promise<IMessage>;
+  finish: (message: IMessage) => Promise<IMessage>;
+  remove: (key: string) => Promise<void>;
+  clear: () => Promise<void>;
 } => {
-  const messages = useStorage<IMessage[]>(`chat_messages_${chat.key}`, []);
+  const { db } = useDB();
 
-  function add(message: IMessage) {
-    messages.value.push({ ...message });
+  const messages = reactive<IMessage[]>([]);
+  const lastTimestamp = computed(() => {
+    return messages[messages.length - 1]?.created_at || Date.now() / 1000;
+  });
+
+  async function load(lastCur: number) {
+    return await db.messages
+      .where({ chat_key: chat.key })
+      .and((item: IMessage) => item.created_at < lastCur)
+      .limit(pageSize)
+      .reverse()
+      .sortBy("created_at", (items: IMessage[]) => {
+        return items;
+      });
   }
 
-  function remove(key: string) {
-    const index = messages.value.findIndex((message) => message.key === key);
-    if (index > -1) {
-      messages.value.splice(index, 1);
+  async function loadMore() {
+    const msgs = await load(lastTimestamp.value);
+    console.log({ msgs });
+    messages.push(...(msgs.reverse()));
+  }
+
+  async function add(message: Partial<IMessage>) {
+    const newMessage = {
+      finished: false,
+      ...message,
+      key: nanoid(),
+      chat_key: chat.key,
+      server_key: chat.server_key,
+      created_at: Date.now() / 1000,
+      updated_at: Date.now() / 1000,
+    } as IMessage;
+
+    messages.push({ ...newMessage });
+
+    if (newMessage.finished) {
+      await db.messages.add({ ...newMessage });
     }
+
+    return newMessage;
   }
 
-  function clear() {
-    messages.value = [];
+  async function finish(message: IMessage) {
+    message.finished = true;
+
+    const exists = await db.messages.where({ key: message.key }).toArray();
+
+    if (exists.length) {
+      await db.messages.update(message.key, { ...message });
+    } else {
+      await db.messages.add({ ...message });
+    }
+
+    return message;
   }
+
+  async function remove(key: string) {
+    const index = messages.findIndex((message) => message.key === key);
+    if (0 > index) {
+      return;
+    }
+
+    messages.splice(index, 1);
+
+    await db.messages.delete(key);
+  }
+
+  async function clear() {
+    messages.splice(0);
+
+    await db.messages.where({ chat_key: chat.key }).delete();
+  }
+
+  onMounted(() => {
+    loadMore();
+  });
 
   return {
     messages,
     add,
+    finish,
     remove,
     clear,
   };

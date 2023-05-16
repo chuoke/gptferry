@@ -19,7 +19,7 @@ const providers: IProvider[] = [
   {
     key: "chatgpt",
     name: "ChatGPT",
-    avatar: "/providers/chatgpt/logo.svg",
+    avatar: "/providers/chatgpt/logo.png",
     models: [
       {
         value: "gpt-4",

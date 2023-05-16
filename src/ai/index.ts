@@ -4,7 +4,7 @@ import type { IChatOptions } from "@/ai/types";
 export const useAI = (
   provider: string
 ): {
-  chat: (options: IChatOptions) => void;
+  chat: (options: IChatOptions) => Promise<void>;
 } => {
   if (provider === "chatgpt") {
     return openai();

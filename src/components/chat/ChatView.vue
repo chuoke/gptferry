@@ -13,7 +13,7 @@
       class="rounded-tl-lg bg-second"
     >
       <q-layout container view="hHh lpR fFf" style="height: calc(100vh - 24px)">
-        <q-header bordered class="bg-second text-second shadow-sm">
+        <q-header class="bg-second text-second shadow-1">
           <q-toolbar>
             <q-btn
               dense
@@ -100,7 +100,7 @@
         </q-header>
 
         <q-page-container>
-          <q-page>
+          <q-page class="chat-view-list">
             <q-scroll-area
               style="height: calc(100vh - 24px - 50px - 50px - 20px)"
               :thumb-style="{
@@ -238,6 +238,7 @@ const {
   update: updateChat,
   remove: removeChat,
   clear: clearChat,
+  active: activeChat,
 } = useChats(props.server.key);
 
 const {
@@ -261,15 +262,16 @@ function toDeleteServer() {
   });
 }
 
-function saveChat(val: Partial<IChat>) {
+async function saveChat(val: Partial<IChat>) {
   console.log({ val });
   if ("key" in val && val.key) {
-    updateChat(val as IChat);
+    await updateChat(val as IChat);
   } else {
-    const chat = addChat({
+    const chat = await addChat({
       ...(val as IChatNew),
     });
-    activeChatKey.value = chat.key;
+
+    activeChat(chat);
   }
 
   closeChatForm();
@@ -287,7 +289,7 @@ function toClearChat() {
 
 function handleChatClicked(chat: IChat) {
   console.log({ chat });
-  activeChatKey.value = chat.key;
+  activeChat(chat);
 }
 
 function handleChatDeleted(chat: IChat) {
@@ -296,3 +298,11 @@ function handleChatDeleted(chat: IChat) {
 
 const { open: openServerForm } = useServerFormDialog();
 </script>
+
+<style lang="scss">
+.chat-view-list {
+  .q-scrollarea__content {
+    max-width: 100%;
+  }
+}
+</style>
