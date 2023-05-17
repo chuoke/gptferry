@@ -48,9 +48,11 @@ export default {
     clear: "Clear messages",
     clear_confirm:
       "Sure you want to clear your chat history? It cannot be restored after being cleared.",
+    copy: "Copy",
     copy_success: "Content copied",
     cipy_failed: "Content copy failure",
-    copy: "Copy",
+    favorite: "Like",
+    unfavorite: "Unlike",
     delete: "Delete",
     delete_confirm: "Are you sure you want to delete this record?",
     view_empty_msg:

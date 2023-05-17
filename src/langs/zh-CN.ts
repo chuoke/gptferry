@@ -47,6 +47,8 @@ export default {
     copy: "复制",
     copy_success: "内容已复制",
     cipy_failed: "内容复制失败",
+    favorite: "收藏",
+    unfavorite: "取消收藏",
     delete: "删除",
     delete_confirm: "确认要删除该条记录吗?",
     view_empty_msg: "创建服务和聊天，开始从AI获取灵感和帮助",

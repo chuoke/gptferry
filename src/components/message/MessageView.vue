@@ -118,6 +118,29 @@
                       v-close-popup
                       clickable
                       class="rounded q-px-xs"
+                      @click="favorite(message)"
+                    >
+                      <q-item-section>
+                        {{
+                          message.favorited
+                            ? $t("message.unfavorite")
+                            : $t("message.favorite")
+                        }}
+                      </q-item-section>
+                      <q-item-section side>
+                        <q-icon
+                          :name="
+                            message.favorited ? 'favorite' : 'favorite_border'
+                          "
+                          :color="message.favorited ? 'red-7' : ''"
+                          size="xs"
+                        ></q-icon>
+                      </q-item-section>
+                    </q-item>
+                    <q-item
+                      v-close-popup
+                      clickable
+                      class="rounded q-px-xs"
                       @click="toDeleteMessage(message)"
                     >
                       <q-item-section>
@@ -198,6 +221,7 @@ const {
   remove: removeMessage,
   add: addMessage,
   finish: finishMessage,
+  favorite: favoriteMessage,
 } = useMessages(props.chat);
 const { open: openServerForm } = useServerFormDialog();
 const { servers } = useServers();
@@ -368,6 +392,10 @@ async function toSendMessage() {
   } finally {
     loadingMsgKey.value = "";
   }
+}
+
+async function favorite(message: IMessage) {
+  await favoriteMessage(message);
 }
 
 function newline() {

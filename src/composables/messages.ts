@@ -26,6 +26,7 @@ export const useMessages = (
   finish: (message: IMessage) => Promise<IMessage>;
   remove: (key: string) => Promise<void>;
   clear: () => Promise<void>;
+  favorite: (message: IMessage) => Promise<IMessage>;
 } => {
   const { db } = useDB();
 
@@ -115,11 +116,17 @@ export const useMessages = (
     await loadMore();
   });
 
+  async function favorite(message: IMessage) {
+    message.favorited = message.favorited ? false : true;
+    return await update(message);
+  }
+
   return {
     messages,
     add,
     finish,
     remove,
     clear,
+    favorite,
   };
 };
