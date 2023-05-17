@@ -48,7 +48,7 @@ export const useMessages = (
   async function loadMore() {
     const msgs = await load(lastTimestamp.value);
     console.log({ msgs });
-    messages.push(...(msgs.reverse()));
+    messages.push(...msgs.reverse());
   }
 
   async function add(message: Partial<IMessage>) {
@@ -102,8 +102,8 @@ export const useMessages = (
     await db.messages.where({ chat_key: chat.key }).delete();
   }
 
-  onMounted(() => {
-    loadMore();
+  onMounted(async () => {
+    await loadMore();
   });
 
   return {
