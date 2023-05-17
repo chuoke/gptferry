@@ -1,5 +1,10 @@
 <template>
-  <div class="content" @click="handleClick($event)" v-html="htmlStr"></div>
+  <div
+    class="content"
+    :class="{ typing: loading }"
+    @click="handleClick($event)"
+    v-html="htmlStr"
+  ></div>
 </template>
 
 <script setup lang="ts">
@@ -20,9 +25,8 @@ const props = withDefaults(
 );
 
 const htmlStr = computed(() => {
-  return (
-    str2html(props.text) + (props.loading ? "<span class='typing'></span>" : "")
-  );
+  return str2html(props.text || "");
+  // str2html(props.text) + (props.loading ? "<span class='typing'></span>" : "")
 });
 
 const md = new MarkdownIt({
@@ -107,6 +111,8 @@ async function copyContent(str: string): Promise<boolean> {
 
 <style lang="scss">
 .content {
+  min-height: 1rem;
+
   p {
     margin-bottom: 0.5rem;
 
@@ -137,25 +143,25 @@ async function copyContent(str: string): Promise<boolean> {
       cursor: pointer;
     }
   }
+}
 
-  .typing {
-    font-size: 2em;
+.typing {
+  @keyframes blink {
+    0% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
+
+  &:empty::before,
+  & > :last-child::after {
+    font-size: 1.2rem;
     margin: 0;
     font-family: "Courier New";
-
-    &:after {
-      content: "|";
-      animation: blink 500ms linear infinite alternate;
-    }
-
-    @keyframes blink {
-      0% {
-        opacity: 0;
-      }
-      100% {
-        opacity: 1;
-      }
-    }
+    content: "|";
+    animation: blink 500ms linear infinite alternate;
   }
 }
 </style>
