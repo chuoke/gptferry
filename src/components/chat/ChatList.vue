@@ -10,7 +10,7 @@
         :key="chat.key"
         :chat="chat"
         :active="chat.key === actvieKey"
-        class="rounded q-px-xs q-mb-sm"
+        class="rounded q-px-xs q-mb-xs"
         @click="handleClick(chat)"
       >
         <template #menus>
@@ -31,8 +31,6 @@
                     {{ $t("message.clear") }}
                   </q-item-section>
                 </q-item> -->
-
-                <q-separator spaced />
 
                 <q-separator spaced />
 
