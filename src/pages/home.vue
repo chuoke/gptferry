@@ -132,7 +132,6 @@ const { settingDialogOpen, open: openSettingDialog } = useSettingDialog();
 
           <div class="text-center">
             <q-btn
-              :title="$t('server.new')"
               icon="add"
               color="white"
               text-color="primary"
@@ -142,6 +141,13 @@ const { settingDialogOpen, open: openSettingDialog } = useSettingDialog();
               class="mb-2"
               @click.stop.prevent="toAddServer"
             >
+              <q-tooltip
+                anchor="center right"
+                self="center start"
+                :offset="[10, 10]"
+              >
+                {{ $t("server.new") }}
+              </q-tooltip>
             </q-btn>
           </div>
         </template>
