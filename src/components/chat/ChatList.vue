@@ -14,7 +14,7 @@
         @click="handleClick(chat)"
       >
         <template #menus>
-          <q-icon name="more_vert" size="xs">
+          <q-icon name="more_vert" size="xs" style="font-size: 14px;">
             <q-menu transition-show="jump-down" transition-hide="jump-up">
               <q-list style="min-width: 150px" dense class="q-pa-sm">
                 <q-item

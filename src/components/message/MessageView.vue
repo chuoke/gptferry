@@ -98,7 +98,7 @@
                     name="more_horiz"
                     right
                     class="q-pa-none absolute-bottom-right text-caption text-weight-light cursor-pointer"
-                    style="opacity: 0.6; font-size: 14px;"
+                    style="opacity: 0.6; font-size: 14px"
                   >
                     <q-menu>
                       <q-list dense style="min-width: 150px" class="q-pa-sm">
@@ -213,7 +213,7 @@ const currentServer = computed(() => {
 const { userProfile } = useUserProfile();
 
 onMounted(() => {
-  scrollToBottom(true);
+  setTimeout(() => scrollToBottom(true), 1000);
 });
 
 const messagePageRef = ref<Element | null>(null);
@@ -238,6 +238,7 @@ watch(
 const messageContainerHeight = ref(0);
 const scrollToBottom = throttle(function (force?: boolean) {
   nextTick(() => {
+    console.log("Scroll");
     if (messageContainerRef.value) {
       const containerHeight = messageContainerRef.value?.clientHeight;
 
@@ -246,7 +247,7 @@ const scrollToBottom = throttle(function (force?: boolean) {
         scrollAreaRef.value?.setScrollPosition(
           "vertical",
           containerHeight,
-          force ? 0 : 350
+          force ? 200 : 500
         );
       }
     }
