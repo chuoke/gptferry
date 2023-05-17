@@ -10,11 +10,11 @@
         :key="chat.key"
         :chat="chat"
         :active="chat.key === actvieKey"
-        class="rounded q-px-xs"
+        class="rounded q-px-xs q-mb-sm"
         @click="handleClick(chat)"
       >
         <template #menus>
-          <q-icon name="more_vert" size="xs" style="font-size: 14px;">
+          <q-icon name="more_vert" size="xs" style="font-size: 14px">
             <q-menu transition-show="jump-down" transition-hide="jump-up">
               <q-list style="min-width: 150px" dense class="q-pa-sm">
                 <q-item
@@ -26,11 +26,13 @@
                   <q-item-section>{{ $t("chat.edit") }}</q-item-section>
                 </q-item>
 
-                <q-item v-close-popup clickable class="rounded-borders">
+                <!-- <q-item v-close-popup clickable class="rounded-borders">
                   <q-item-section>
                     {{ $t("message.clear") }}
                   </q-item-section>
-                </q-item>
+                </q-item> -->
+
+                <q-separator spaced />
 
                 <q-separator spaced />
 

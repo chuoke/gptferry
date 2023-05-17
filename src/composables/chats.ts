@@ -46,9 +46,7 @@ export const useChats = (
     liveQuery(() => {
       return db.chats
         .where({ server_key: serverKey })
-        .toArray((items: IChat[]) => {
-          console.log(`items ${serverKey}`, items);
-
+        .sortBy("created_at", (items: IChat[]) => {
           return items;
         });
     }) as any,
@@ -90,10 +88,10 @@ export const useChats = (
   };
 
   const update = async (chat: IChat): Promise<IChat> => {
-    const index = chats.value.findIndex((item) => item.key === chat.key);
-    if (0 > index) {
-      throw new Error("对话不存在");
-    }
+    // const index = chats.value.findIndex((item) => item.key === chat.key);
+    // if (0 > index) {
+    //   throw new Error("对话不存在");
+    // }
 
     chat.updated_at = Date.now() / 1000;
 
