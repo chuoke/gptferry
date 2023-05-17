@@ -57,84 +57,81 @@
           }"
           class="message-scrollarea"
         >
-          <div
+          <!-- <div
             ref="messageContainerRef"
-            class="q-pa-sm q-pa-lg-lg row justify-center"
+            class="q-pa-sm q-pa-lg-lg column reverse justify-center"
+            style="min-height: 100%"
+          ></div> -->
+          <!-- <div style="width: 100%">
+        </div> -->
+          <q-chat-message
+            v-for="message of messages"
+            :key="message.key"
+            :text="[message.conent]"
+            :sent="message.role === 'user'"
           >
-            <div style="width: 100%">
-              <q-chat-message
-                v-for="message of messages"
-                :key="message.key"
-                :text="[message.conent]"
-                :sent="message.role === 'user'"
+            <template #avatar>
+              <q-avatar
+                v-if="message.role !== 'user'"
+                class="q-message-avatar q-message-avatar--received"
               >
-                <template #avatar>
-                  <q-avatar
-                    v-if="message.role !== 'user'"
-                    class="q-message-avatar q-message-avatar--received"
-                  >
-                    <img :src="chat.avatar || currentServer?.avatar" />
-                  </q-avatar>
-                  <q-avatar
-                    v-else
-                    class="q-message-avatar q-message-avatar--sent"
-                  >
-                    <img
-                      v-if="userProfile.avatar"
-                      :src="userProfile.avatar"
-                      :alt="userProfile.name"
-                    />
-                    <q-icon v-else name="account_circle"></q-icon>
-                  </q-avatar>
-                </template>
-                <div style="min-width: 50px; min-height: 10px">
-                  <markdown-message
-                    :text="message.content"
-                    :loading="message.key === loadingMsgKey"
-                  ></markdown-message>
+                <img :src="chat.avatar || currentServer?.avatar" />
+              </q-avatar>
+              <q-avatar v-else class="q-message-avatar q-message-avatar--sent">
+                <img
+                  v-if="userProfile.avatar"
+                  :src="userProfile.avatar"
+                  :alt="userProfile.name"
+                />
+                <q-icon v-else name="account_circle"></q-icon>
+              </q-avatar>
+            </template>
+            <div style="min-width: 50px; min-height: 10px">
+              <markdown-message
+                :text="message.content"
+                :loading="message.key === loadingMsgKey"
+              ></markdown-message>
 
-                  <q-icon
-                    size="xs"
-                    name="more_horiz"
-                    right
-                    class="q-pa-none absolute-bottom-right text-caption text-weight-light cursor-pointer"
-                    style="opacity: 0.6; font-size: 14px"
-                  >
-                    <q-menu>
-                      <q-list dense style="min-width: 150px" class="q-pa-sm">
-                        <q-item
-                          v-close-popup
-                          clickable
-                          class="rounded q-px-xs"
-                          @click="toCopyContent(message.content)"
-                        >
-                          <q-item-section>
-                            {{ $t("message.copy") }}
-                          </q-item-section>
-                          <q-item-section side>
-                            <q-icon name="content_copy" size="xs"></q-icon>
-                          </q-item-section>
-                        </q-item>
-                        <q-item
-                          v-close-popup
-                          clickable
-                          class="rounded q-px-xs"
-                          @click="toDeleteMessage(message)"
-                        >
-                          <q-item-section>
-                            {{ $t("message.delete") }}
-                          </q-item-section>
-                          <q-item-section side>
-                            <q-icon name="delete_forever" size="xs"></q-icon>
-                          </q-item-section>
-                        </q-item>
-                      </q-list>
-                    </q-menu>
-                  </q-icon>
-                </div>
-              </q-chat-message>
+              <q-icon
+                size="xs"
+                name="more_horiz"
+                right
+                class="q-pa-none absolute-bottom-right text-caption text-weight-light cursor-pointer"
+                style="opacity: 0.6; font-size: 14px"
+              >
+                <q-menu>
+                  <q-list dense style="min-width: 150px" class="q-pa-sm">
+                    <q-item
+                      v-close-popup
+                      clickable
+                      class="rounded q-px-xs"
+                      @click="toCopyContent(message.content)"
+                    >
+                      <q-item-section>
+                        {{ $t("message.copy") }}
+                      </q-item-section>
+                      <q-item-section side>
+                        <q-icon name="content_copy" size="xs"></q-icon>
+                      </q-item-section>
+                    </q-item>
+                    <q-item
+                      v-close-popup
+                      clickable
+                      class="rounded q-px-xs"
+                      @click="toDeleteMessage(message)"
+                    >
+                      <q-item-section>
+                        {{ $t("message.delete") }}
+                      </q-item-section>
+                      <q-item-section side>
+                        <q-icon name="delete_forever" size="xs"></q-icon>
+                      </q-item-section>
+                    </q-item>
+                  </q-list>
+                </q-menu>
+              </q-icon>
             </div>
-          </div>
+          </q-chat-message>
         </q-scroll-area>
       </q-page>
     </q-page-container>
@@ -213,7 +210,7 @@ const currentServer = computed(() => {
 const { userProfile } = useUserProfile();
 
 onMounted(() => {
-  setTimeout(() => scrollToBottom(true), 1000);
+  // setTimeout(() => scrollToBottom(true), 1000);
 });
 
 const messagePageRef = ref<Element | null>(null);
@@ -226,7 +223,7 @@ watch(
   () => messagePageIsVisible.value,
   (val) => {
     if (val && !isScolled.value) {
-      scrollToBottom(true);
+      // scrollToBottom(true);
       isScolled.value = true;
     }
   },
@@ -244,11 +241,11 @@ const scrollToBottom = throttle(function (force?: boolean) {
 
       if (force || messageContainerHeight.value !== containerHeight) {
         messageContainerHeight.value = containerHeight;
-        scrollAreaRef.value?.setScrollPosition(
-          "vertical",
-          containerHeight,
-          force ? 200 : 500
-        );
+        // scrollAreaRef.value?.setScrollPosition(
+        //   "vertical",
+        //   containerHeight,
+        //   force ? 200 : 500
+        // );
       }
     }
   });
@@ -294,79 +291,80 @@ const loadingMsgKey = ref<string>("");
 const chatProvider = useAI(currentServer.value?.provider_key as string);
 
 async function toSendMessage() {
-  if (!currentServer.value?.api_key) {
-    $q.notify({
-      type: "negative",
-      message: translate("server.api_key_empty_notice"),
-    });
-    openServerForm(currentServer.value);
-    return;
-  }
-
-  if (loadingMsgKey.value || !inputMessage.value) {
-    return;
-  }
-
-  loadingMsgKey.value = "...";
-
-  const carries = messages.slice(-(props.chat.carried_message_count || 10));
-
-  await addMessage({
-    finished: true,
-    role: "user",
-    content: inputMessage.value,
-    model: props.chat.model || currentServer.value.model,
-  });
-
-  const receivedMessage = await addMessage({
-    finished: false,
-    role: "assistant",
-    content: "",
-    model: props.chat.model || currentServer.value.model,
-  });
-
-  const chatOptions = {
-    message: inputMessage.value,
-    model: currentServer.value.model,
-    api_base_url:
-      currentServer.value.api_base_url ||
-      currentServer.value.provider?.api_base_url ||
-      "",
-    api_key: currentServer.value.api_key,
-    carries: carries,
-    system_prompt: props.chat.system_prompt,
-    probability_mass: props.chat.probability_mass,
-    onUpdate: (content: string, options: { done: boolean }) => {
-      messages[messages.length - 1].content += content;
-      receivedMessage.content += content;
-
-      scrollToBottom();
-      const { done } = options;
-      if (done) {
-        loadingMsgKey.value = "";
-
-        if (!receivedMessage.finished) {
-          receivedMessage.finished = true;
-          finishMessage(receivedMessage);
-        }
-      }
-    },
-  };
-
-  scrollToBottom();
-
-  loadingMsgKey.value = messages[messages.length - 1].key;
-
-  inputMessage.value = "";
-
   try {
+    if (!currentServer.value?.api_key) {
+      $q.notify({
+        type: "negative",
+        message: translate("server.api_key_empty_notice"),
+      });
+      openServerForm(currentServer.value);
+      return;
+    }
+
+    if (loadingMsgKey.value || !inputMessage.value) {
+      return;
+    }
+
+    loadingMsgKey.value = "...";
+
+    const carries = messages
+      .slice(0, props.chat.carried_message_count || 10)
+      .reverse();
+
+    const sendMessage = await addMessage({
+      finished: true,
+      role: "user",
+      content: inputMessage.value,
+      model: props.chat.model || currentServer.value.model,
+    });
+
+    inputMessage.value = "";
+
+    const receivedMessage = await addMessage({
+      finished: false,
+      role: "assistant",
+      content: "",
+      model: props.chat.model || currentServer.value.model,
+    });
+
+    loadingMsgKey.value = receivedMessage.key;
+
+    scrollToBottom();
+
+    const chatOptions = {
+      message: sendMessage.content,
+      model: currentServer.value.model,
+      api_base_url:
+        currentServer.value.api_base_url ||
+        currentServer.value.provider?.api_base_url ||
+        "",
+      api_key: currentServer.value.api_key,
+      carries: carries,
+      system_prompt: props.chat.system_prompt,
+      probability_mass: props.chat.probability_mass,
+      onUpdate: (content: string, options: { done: boolean }) => {
+        messages[0].content += content;
+        receivedMessage.content += content;
+
+        scrollToBottom();
+        const { done } = options;
+        if (done) {
+          loadingMsgKey.value = "";
+
+          if (!receivedMessage.finished) {
+            receivedMessage.finished = true;
+            finishMessage(receivedMessage);
+          }
+        }
+      },
+    };
+
     await chatProvider.chat(chatOptions);
   } catch (err: any) {
     $q.notify({
       message: "message" in err ? err.message : err,
       type: "negative",
     });
-    messages[messages.length - 1].content += " ";
   } finally {
     loadingMsgKey.value = "";
   }
@@ -383,10 +381,14 @@ function newline() {
 <style lang="scss">
 .message-scrollarea .q-scrollarea__content {
   display: flex;
-  flex-direction: column;
+  flex-direction: column-reverse;
   align-items: stretch;
-  justify-content: flex-end;
+  // justify-content: flex-end;
+  height: 100%;
   max-width: 100%;
+  padding: 10px 10px 10px 15px;
+  overflow-y: scroll;
+  scroll-behavior: smooth;
 }
 
 .q-message-container {

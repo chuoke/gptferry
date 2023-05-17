@@ -157,9 +157,10 @@ async function copyContent(str: string): Promise<boolean> {
 
   &:empty::before,
   & > :last-child::after {
-    font-size: 1.2rem;
+    font-size: 1rem;
     margin: 0;
     font-family: "Courier New";
+    font-weight: bold;
     content: "|";
     animation: blink 500ms linear infinite alternate;
   }

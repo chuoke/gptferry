@@ -64,6 +64,7 @@ export default (): {
     const decoder = new TextDecoder("utf-8");
     function readStream() {
       reader.read().then(({ done, value }) => {
+        console.log({ done, value });
         if (done) {
           options.onUpdate("", { done: true });
           return;
@@ -93,8 +94,8 @@ export default (): {
               });
             }
           } catch (err) {
-            console.log({ err });
-            throw err;
+            console.log({ value, err });
+            // throw err;
           }
         });
 

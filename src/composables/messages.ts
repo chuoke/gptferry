@@ -48,21 +48,22 @@ export const useMessages = (
   async function loadMore() {
     const msgs = await load(lastTimestamp.value);
     console.log({ msgs });
-    messages.push(...msgs.reverse());
+    // messages.push(...msgs.reverse());
+    messages.push(...msgs);
   }
 
   async function add(message: Partial<IMessage>) {
     const newMessage = {
       finished: false,
-      ...message,
       key: nanoid(),
       chat_key: chat.key,
       server_key: chat.server_key,
       created_at: Date.now() / 1000,
       updated_at: Date.now() / 1000,
+      ...message,
     } as IMessage;
 
-    messages.push({ ...newMessage });
+    messages.unshift({ ...newMessage });
 
     if (newMessage.finished) {
       await db.messages.add({ ...newMessage });
@@ -71,13 +72,21 @@ export const useMessages = (
     return newMessage;
   }
 
+  async function update(message: IMessage) {
+    message.updated_at = Date.now() / 1000;
+
+    await db.messages.update(message.key, { ...message });
+
+    return message;
+  }
+
   async function finish(message: IMessage) {
     message.finished = true;
 
     const exists = await db.messages.where({ key: message.key }).toArray();
 
     if (exists.length) {
-      await db.messages.update(message.key, { ...message });
+      await update(message);
     } else {
       await db.messages.add({ ...message });
     }
