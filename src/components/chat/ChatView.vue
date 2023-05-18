@@ -177,6 +177,7 @@
               v-show="chat.key == activeChatKey"
               :key="chat.key"
               :chat="chat"
+              @open-drawer="openLeftDrawer"
             ></message-view>
           </template>
 

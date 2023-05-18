@@ -1,7 +1,8 @@
 const serverMenuDrawerOpen = ref(true);
-const chatMenuDrawerOpen = ref(true);
 
 export const useLeftDrawer = () => {
+  const chatMenuDrawerOpen = ref(true);
+
   function open(type?: "server" | "chat") {
     if (chatMenuDrawerOpen.value || type === "server") {
       serverMenuDrawerOpen.value = true;

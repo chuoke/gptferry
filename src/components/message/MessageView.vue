@@ -14,7 +14,7 @@
           round
           icon="menu"
           class="lt-sm"
-          @click="openLeftDrawer()"
+          @click="toOpenLeftDrawer"
         />
 
         <q-toolbar-title class="q-ml-sm">
@@ -199,16 +199,15 @@ import {
   type MaybeComputedElementRef,
 } from "@vueuse/core";
 import { useUserProfile } from "@/composables/user";
-import { useLeftDrawer } from "@/composables/left-drawer";
 import { useI18n } from "vue-i18n";
 
 const props = defineProps<{
   chat: IChat;
 }>();
+const emits = defineEmits(["open-drawer"]);
 
 const $q = useQuasar();
 const { t: translate } = useI18n();
-const { open: openLeftDrawer } = useLeftDrawer();
 
 // const rightDrawerOpen = ref(true);
 const inputMessage = ref("");
@@ -255,6 +254,10 @@ watch(
     immediate: true,
   }
 );
+
+function toOpenLeftDrawer() {
+  emits("open-drawer");
+}
 
 const messageContainerHeight = ref(0);
 const scrollToBottom = throttle(function (force?: boolean) {
