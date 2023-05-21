@@ -45,25 +45,11 @@
     </q-drawer> -->
     <q-page-container>
       <q-page>
-        <q-scroll-area
-          ref="scrollAreaRef"
-          style="height: calc(100vh - 24px - 50px - 65px); width: 100%"
-          :thumb-style="{
-            right: '2px',
-            borderRadius: '5px',
-            backgroundColor: 'rgb(231 208 249/0.4)',
-            width: '5px',
-            opacity: '0.75',
-          }"
-          class="message-scrollarea"
+        <div
+          ref="messageContainerRef"
+          class="message-list-container"
+          @scroll="handleScroll"
         >
-          <!-- <div
-            ref="messageContainerRef"
-            class="q-pa-sm q-pa-lg-lg column reverse justify-center"
-            style="min-height: 100%"
-          ></div> -->
-          <!-- <div style="width: 100%">
-        </div> -->
           <q-chat-message
             v-for="message of messages"
             :key="message.key"
@@ -155,11 +141,11 @@
               </q-icon>
             </div>
           </q-chat-message>
-        </q-scroll-area>
+        </div>
       </q-page>
     </q-page-container>
 
-    <q-footer class="px-2 bg-transparent">
+    <q-footer class="q-px-sm q-px-md-lg bg-transparent">
       <q-input
         v-model="inputMessage"
         counter
@@ -189,15 +175,11 @@
 import type { IChat } from "@/composables/chats";
 import { useMessages, type IMessage } from "@/composables/messages";
 import { useServers, type IServer } from "@/composables/servers";
-import { useQuasar, copyToClipboard, QScrollArea, throttle } from "quasar";
+import { useQuasar, copyToClipboard, throttle } from "quasar";
 // import PromptTips from "@/components/prompt/prompt-tips.vue";
 import { useAI } from "@/ai";
 import MarkdownMessage from "@/components/message/MarkdownMessage.vue";
 import { useServerFormDialog } from "@/composables/server-form-dialog";
-import {
-  useElementVisibility,
-  type MaybeComputedElementRef,
-} from "@vueuse/core";
 import { useUserProfile } from "@/composables/user";
 import { useI18n } from "vue-i18n";
 
@@ -211,7 +193,6 @@ const { t: translate } = useI18n();
 
 // const rightDrawerOpen = ref(true);
 const inputMessage = ref("");
-const scrollAreaRef = ref<QScrollArea | null>(null);
 const messageContainerRef = ref<Element | null>(null);
 
 const {
@@ -221,6 +202,7 @@ const {
   add: addMessage,
   finish: finishMessage,
   favorite: favoriteMessage,
+  loadMore: loadMoreMessages,
 } = useMessages(props.chat);
 const { open: openServerForm } = useServerFormDialog();
 const { servers } = useServers();
@@ -232,47 +214,42 @@ const currentServer = computed(() => {
 
 const { userProfile } = useUserProfile();
 
-onMounted(() => {
-  // setTimeout(() => scrollToBottom(true), 1000);
+onMounted(async () => {
+  console.log("mounted");
+  await loadMoreMessages();
 });
 
 const messagePageRef = ref<Element | null>(null);
-const messagePageIsVisible = useElementVisibility(
-  messagePageRef as MaybeComputedElementRef
-);
-const isScolled = ref(false);
-
-watch(
-  () => messagePageIsVisible.value,
-  (val) => {
-    if (val && !isScolled.value) {
-      // scrollToBottom(true);
-      isScolled.value = true;
-    }
-  },
-  {
-    immediate: true,
-  }
-);
 
 function toOpenLeftDrawer() {
   emits("open-drawer");
 }
 
+const scollLastPosition = ref(0);
+const handleScroll = async (event: Event) => {
+  const position = Math.abs(event.target?.scrollTop);
+  if (
+    position > scollLastPosition.value &&
+    Math.abs(event.target?.scrollTop || 0) / (event.target?.scrollHeight || 1) >
+      0.7
+  ) {
+    await loadMoreMessages();
+  }
+
+  scollLastPosition.value = position;
+};
+
 const messageContainerHeight = ref(0);
 const scrollToBottom = throttle(function (force?: boolean) {
   nextTick(() => {
     console.log("Scroll");
+    console.log({ messageContener: messageContainerRef.value });
     if (messageContainerRef.value) {
       const containerHeight = messageContainerRef.value?.clientHeight;
 
       if (force || messageContainerHeight.value !== containerHeight) {
         messageContainerHeight.value = containerHeight;
-        // scrollAreaRef.value?.setScrollPosition(
-        //   "vertical",
-        //   containerHeight,
-        //   force ? 200 : 500
-        // );
+        messageContainerRef.value.scrollTop = 0;
       }
     }
   });
@@ -346,6 +323,7 @@ async function toSendMessage() {
     });
 
     inputMessage.value = "";
+    scrollToBottom(true);
 
     const receivedMessage = await addMessage({
       finished: false,
@@ -355,8 +333,6 @@ async function toSendMessage() {
     });
 
     loadingMsgKey.value = receivedMessage.key;
-
-    scrollToBottom();
 
     const chatOptions = {
       message: sendMessage.content,
@@ -373,7 +349,7 @@ async function toSendMessage() {
         messages[0].content += content;
         receivedMessage.content += content;
 
-        scrollToBottom();
+        // scrollToBottom();
         const { done } = options;
         if (done) {
           loadingMsgKey.value = "";
@@ -410,6 +386,25 @@ function newline() {
 </script>
 
 <style lang="scss">
+.message-list-container {
+  height: calc(100vh - 24px - 50px - 65px);
+  width: 100%;
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: stretch;
+  padding: 10px 10px 10px 15px;
+  overflow-y: scroll;
+  scroll-behavior: smooth;
+
+  &:scrollbar {
+    right: "2px";
+    borderradius: "5px";
+    backgroundcolor: "rgb(231 208 249/0.4)";
+    width: "5px";
+    opacity: "0.75";
+  }
+}
+
 .message-scrollarea .q-scrollarea__content {
   display: flex;
   flex-direction: column-reverse;

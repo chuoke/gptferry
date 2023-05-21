@@ -27,30 +27,36 @@ export const useMessages = (
   remove: (key: string) => Promise<void>;
   clear: () => Promise<void>;
   favorite: (message: IMessage) => Promise<IMessage>;
+  loadMore: () => Promise<void>;
 } => {
   const { db } = useDB();
 
   const messages = reactive<IMessage[]>([]);
-  const lastTimestamp = computed(() => {
-    return messages[messages.length - 1]?.created_at || Date.now() / 1000;
-  });
 
-  async function load(lastCur: number) {
+  const loading = ref(false);
+  async function load() {
     return await db.messages
-      .where({ chat_key: chat.key })
-      .and((item: IMessage) => item.created_at < lastCur)
-      .limit(pageSize)
+      .orderBy("created_at")
+      .and((item) => item.chat_key === chat.key)
       .reverse()
-      .sortBy("created_at", (items: IMessage[]) => {
-        return items;
-      });
+      .offset(messages.length)
+      .limit(pageSize)
+      .toArray();
   }
 
   async function loadMore() {
-    const msgs = await load(lastTimestamp.value);
+    if (loading.value) {
+      return;
+    }
+
+    loading.value = true;
+
+    const msgs = await load();
     console.log({ msgs });
     // messages.push(...msgs.reverse());
     messages.push(...msgs);
+
+    loading.value = false;
   }
 
   async function add(message: Partial<IMessage>) {
@@ -112,10 +118,6 @@ export const useMessages = (
     await db.messages.where({ chat_key: chat.key }).delete();
   }
 
-  onMounted(async () => {
-    await loadMore();
-  });
-
   async function favorite(message: IMessage) {
     message.favorited = message.favorited ? false : true;
     return await update(message);
@@ -128,5 +130,6 @@ export const useMessages = (
     remove,
     clear,
     favorite,
+    loadMore,
   };
 };
