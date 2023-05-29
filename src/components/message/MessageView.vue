@@ -392,7 +392,9 @@ function newline() {
   display: flex;
   flex-direction: column-reverse;
   align-items: stretch;
-  padding: 10px 10px 10px 15px;
+  // padding: 10px 10px 10px 15px;
+  padding-top: 10px;
+  padding-bottom: 15px;
   overflow-y: scroll;
   scroll-behavior: smooth;
 
@@ -402,6 +404,16 @@ function newline() {
     background-color: "rgb(231 208 249/0.4)";
     width: "5px";
     opacity: "0.75";
+  }
+
+  .q-message {
+    padding: 5px 5px;
+    transition: all 0.5s ease-out;
+
+    &:hover {
+      background-color: #c3c5c417;
+      filter: brightness(105%);
+    }
   }
 }
 

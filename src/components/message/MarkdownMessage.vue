@@ -165,6 +165,12 @@ async function copyContent(str: string): Promise<boolean> {
       cursor: pointer;
     }
   }
+
+  img {
+    max-width: 550px;
+    height: 100%;
+    border-radius: 5px;
+  }
 }
 
 .typing {
