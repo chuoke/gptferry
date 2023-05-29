@@ -398,8 +398,8 @@ function newline() {
 
   &:scrollbar {
     right: "2px";
-    borderradius: "5px";
-    backgroundcolor: "rgb(231 208 249/0.4)";
+    border-radius: "5px";
+    background-color: "rgb(231 208 249/0.4)";
     width: "5px";
     opacity: "0.75";
   }

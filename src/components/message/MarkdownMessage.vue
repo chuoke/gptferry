@@ -112,6 +112,27 @@ async function copyContent(str: string): Promise<boolean> {
 <style lang="scss">
 .content {
   min-height: 1rem;
+  letter-spacing: 1px;
+
+  h1 {
+    font-size: 1.15rem;
+    font-weight: 700;
+    line-height: 1.6;
+  }
+
+  h2 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    line-height: 1.6;
+  }
+
+  h3,
+  h4,
+  h5 {
+    font-size: 1.05rem;
+    font-weight: 500;
+    line-height: 1.4;
+  }
 
   p {
     margin-bottom: 0.5rem;
@@ -129,6 +150,7 @@ async function copyContent(str: string): Promise<boolean> {
     border-radius: 5px;
     padding: 10px;
     position: relative;
+    white-space: break-spaces;
 
     span {
       white-space: pre-wrap;
