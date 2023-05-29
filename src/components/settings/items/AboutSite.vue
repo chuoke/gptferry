@@ -1,13 +1,16 @@
 <template>
   <q-card flat>
     <q-card-section class="text-center">
-      <q-avatar size="64px">
-        <q-img src="/logo.svg"></q-img>
+      <q-avatar size="64px" rounded>
+        <q-img src="/logo.png"></q-img>
       </q-avatar>
     </q-card-section>
 
     <q-card-section class="text-center text-subtitle1">
-      <span style="opacity: 0.7">Made by</span>
+      <span style="opacity: 0.7">Made</span>
+      <span style="opacity: 0.7">with </span>
+      <span>🔥❤️</span>
+      by
       <a
         href="https://github.com/chuoke"
         target="_blank"
@@ -16,8 +19,6 @@
       >
         chuoke
       </a>
-      <span style="opacity: 0.7">with </span>
-      <span>🔥❤️</span>
     </q-card-section>
   </q-card>
 </template>

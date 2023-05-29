@@ -66,7 +66,7 @@ const { settingDialogOpen, open: openSettingDialog } = useSettingDialog();
       <q-bar class="bg-tertiary text-tertiary" dense>
         <!-- <q-icon name="laptop_chromebook" /> -->
         <q-avatar size="xs">
-          <q-img src="/logo.svg"></q-img>
+          <q-img src="/logo.png"></q-img>
         </q-avatar>
         <div class="font-bold">GPT Ferry</div>
         <div class="relative">
