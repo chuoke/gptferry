@@ -146,27 +146,7 @@
     </q-page-container>
 
     <q-footer class="q-px-sm q-px-md-lg bg-transparent">
-      <q-input
-        v-model="inputMessage"
-        counter
-        dense
-        clearable
-        standout
-        type="textarea"
-        :rows="1"
-        autogrow
-        @keydown.enter.exact.prevent
-        @keyup.enter.exact="toSendMessage"
-        @keydown.shift.enter.exact.prevent
-        @keyup.shift.enter.exact="newline"
-      >
-        <template #prepend>
-          <q-icon name="message" />
-        </template>
-        <template #append>
-          <q-icon name="send" class="cursor-pointer" @click="toSendMessage" />
-        </template>
-      </q-input>
+      <MessageInput @send="sendMessage"></MessageInput>
     </q-footer>
   </q-layout>
 </template>
@@ -182,6 +162,7 @@ import MarkdownMessage from "@/components/message/MarkdownMessage.vue";
 import { useServerFormDialog } from "@/composables/server-form-dialog";
 import { useUserProfile } from "@/composables/user";
 import { useI18n } from "vue-i18n";
+import MessageInput from "@/components/message/MessageInput.vue";
 
 const props = defineProps<{
   chat: IChat;
@@ -192,7 +173,6 @@ const $q = useQuasar();
 const { t: translate } = useI18n();
 
 // const rightDrawerOpen = ref(true);
-const inputMessage = ref("");
 const messageContainerRef = ref<Element | null>(null);
 
 const {
@@ -294,7 +274,7 @@ function toCopyContent(content: string) {
 const loadingMsgKey = ref<string>("");
 const chatProvider = useAI(currentServer.value?.provider_key as string);
 
-async function toSendMessage() {
+async function sendMessage(inputMessage: string) {
   try {
     if (!currentServer.value?.api_key) {
       $q.notify({
@@ -305,7 +285,7 @@ async function toSendMessage() {
       return;
     }
 
-    if (loadingMsgKey.value || !inputMessage.value) {
+    if (loadingMsgKey.value || !inputMessage) {
       return;
     }
 
@@ -318,11 +298,10 @@ async function toSendMessage() {
     const sendMessage = await addMessage({
       finished: true,
       role: "user",
-      content: inputMessage.value,
+      content: inputMessage,
       model: props.chat.model || currentServer.value.model,
     });
 
-    inputMessage.value = "";
     scrollToBottom(true);
 
     const receivedMessage = await addMessage({
@@ -375,13 +354,6 @@ async function toSendMessage() {
 
 async function favorite(message: IMessage) {
   await favoriteMessage(message);
-}
-
-function newline() {
-  if (inputMessage.value) {
-    // inputMessage.value += "\n";
-    inputMessage.value += String.fromCharCode(13, 10);
-  }
 }
 </script>
 

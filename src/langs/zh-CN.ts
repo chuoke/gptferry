@@ -53,6 +53,10 @@ export default {
     delete_confirm: "确认要删除该条记录吗?",
     view_empty_msg: "创建服务和聊天，开始从AI获取灵感和帮助",
   },
+  message_input: {
+    kbd_send: '发送',
+    kbd_newline: '换行',
+  },
   setting: {
     profile: "个人信息",
     about: "关 于",

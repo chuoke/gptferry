@@ -58,6 +58,10 @@ export default {
     view_empty_msg:
       "Create server and chating, start getting inspiration and help from AI",
   },
+  message_input: {
+    kbd_send: 'Send',
+    kbd_newline: 'Newline',
+  },
   setting: {
     profile: "Profile",
     about: "About",
