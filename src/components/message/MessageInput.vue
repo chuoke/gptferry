@@ -22,7 +22,7 @@
     <template #after>
       <q-btn round dense flat icon="info" size="sm">
         <q-menu>
-          <q-card style="width: 200px">
+          <q-card style="width: 240px">
             <q-list dense bordered>
               <q-item>
                 <q-item-section>

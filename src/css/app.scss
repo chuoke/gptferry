@@ -45,3 +45,10 @@
 .text-tertiary {
   color: var(--text-tertiary);
 }
+
+kbd {
+  background-color: #e1e1e44d;
+  font-weight: 600;
+  padding: 2px 3px;
+  border-radius: 2px;
+}
