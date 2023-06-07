@@ -10,8 +10,6 @@
     autogrow
     @keydown.enter.exact.prevent
     @keyup.enter.exact="toSend"
-    @keydown.shift.enter.exact.prevent
-    @keyup.shift.enter.exact="newline"
   >
     <template #prepend>
       <q-icon name="message" />
@@ -57,13 +55,6 @@
 <script setup lang="ts">
 const emits = defineEmits(["update:modelValue", "send"]);
 const message = ref("");
-
-function newline() {
-  if (message.value) {
-    // message.value += "\n";
-    message.value += String.fromCharCode(13, 10);
-  }
-}
 
 function toSend() {
   emits("send", message.value);
