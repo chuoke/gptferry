@@ -10,6 +10,7 @@
     autogrow
     @keydown.enter.exact.prevent
     @keyup.enter.exact="toSend"
+    @keydown.tab.exact="toTab($event)"
   >
     <template #prepend>
       <q-icon name="message" />
@@ -30,11 +31,13 @@
                 </q-item-section>
 
                 <q-item-section side>
-                  <q-item-label caption>{{ $t('message_input.kbd_send') }}</q-item-label>
+                  <q-item-label caption>{{
+                    $t("message_input.kbd_send")
+                  }}</q-item-label>
                 </q-item-section>
               </q-item>
-              
-              <q-separator inset/>
+
+              <q-separator inset />
 
               <q-item>
                 <q-item-section>
@@ -44,7 +47,9 @@
                 </q-item-section>
 
                 <q-item-section side>
-                  <q-item-label caption>{{ $t('message_input.kbd_newline') }}</q-item-label>
+                  <q-item-label caption>{{
+                    $t("message_input.kbd_newline")
+                  }}</q-item-label>
                 </q-item-section>
               </q-item>
             </q-list>
@@ -62,5 +67,29 @@ const message = ref("");
 function toSend() {
   emits("send", message.value);
   message.value = "";
+}
+
+function toTab(event: KeyboardEvent) {
+  event.preventDefault();
+  const tabSize = 4;
+
+  const target = event.target as HTMLTextAreaElement;
+  if (!target) {
+    return;
+  }
+
+  const value = target.value as string;
+  const positionStart = target.selectionStart;
+  const positionEnd = target.selectionEnd;
+
+  message.value =
+    value.substring(0, positionStart) +
+    " ".repeat(tabSize) +
+    value.substring(positionStart);
+
+  nextTick(() => {
+    target.selectionStart = positionStart + tabSize;
+    target.selectionEnd = positionEnd + tabSize;
+  });
 }
 </script>
