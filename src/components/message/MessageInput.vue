@@ -20,8 +20,8 @@
     <template #after>
       <q-btn round dense flat icon="info" size="sm">
         <q-menu>
-          <q-card style="width: 240px">
-            <q-list dense bordered>
+          <q-card style="width: 200px">
+            <q-list dense>
               <q-item>
                 <q-item-section>
                   <q-item-label>
@@ -29,10 +29,13 @@
                   </q-item-label>
                 </q-item-section>
 
-                <q-item-section>
+                <q-item-section side>
                   <q-item-label caption>{{ $t('message_input.kbd_send') }}</q-item-label>
                 </q-item-section>
               </q-item>
+              
+              <q-separator inset/>
+
               <q-item>
                 <q-item-section>
                   <q-item-label>
@@ -40,7 +43,7 @@
                   </q-item-label>
                 </q-item-section>
 
-                <q-item-section>
+                <q-item-section side>
                   <q-item-label caption>{{ $t('message_input.kbd_newline') }}</q-item-label>
                 </q-item-section>
               </q-item>
