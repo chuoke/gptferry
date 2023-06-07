@@ -38,7 +38,7 @@
               <q-item>
                 <q-item-section>
                   <q-item-label>
-                    <kbd>Ctrl</kbd> + <kbd>Enter</kbd>
+                    <kbd>Shift</kbd> + <kbd>Enter</kbd>
                   </q-item-label>
                 </q-item-section>
 
