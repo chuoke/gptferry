@@ -302,14 +302,14 @@ async function sendMessage(inputMessage: string) {
       model: props.chat.model || currentServer.value.model,
     });
 
-    scrollToBottom(true);
-
     const receivedMessage = await addMessage({
       finished: false,
       role: "assistant",
       content: "",
       model: props.chat.model || currentServer.value.model,
     });
+
+    scrollToBottom(true);
 
     loadingMsgKey.value = receivedMessage.key;
 
