@@ -2,17 +2,17 @@ export interface IProvider {
   key: string;
   name: string;
   avatar: string;
-  models: IProviderModel[];
   api_base_url: string;
   api_version: string;
   homepage?: string;
+  models: IProviderModel[];
 }
 
 export interface IProviderModel {
   value: string;
   label: string;
-  description: string;
   max_token: number;
+  description: string;
 }
 
 const providers: IProvider[] = [
@@ -20,6 +20,9 @@ const providers: IProvider[] = [
     key: "chatgpt",
     name: "ChatGPT",
     avatar: "/providers/chatgpt/logo.png",
+    api_base_url: "https://api.openai.com",
+    api_version: "v1",
+    homepage: "http://openai.com",
     models: [
       {
         value: "gpt-4",
@@ -50,20 +53,7 @@ const providers: IProvider[] = [
           "Same capabilities as the standard gpt-3.5-turbo model but with 4 times the context.",
       },
     ],
-    api_base_url: "https://api.openai.com",
-    api_version: "v1",
-    homepage: "http://openai.com",
   },
-  // {
-  //   key: "bard",
-  //   name: "Bard",
-  //   avatar:
-  //     "https://www.gstatic.com/lamda/images/sparkle_resting_v2_1ff6f6a71f2d298b1a31.gif",
-  //   models: [],
-  //   api_base_url: "https://api.openai.com",
-  //   api_version: "v1",
-  //   homepage: "https://bard.google.com/",
-  // },
 ];
 
 export const useProviders = (): {
