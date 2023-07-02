@@ -207,11 +207,11 @@ function toOpenLeftDrawer() {
 
 const scollLastPosition = ref(0);
 const handleScroll = async (event: Event) => {
-  const position = Math.abs(event.target?.scrollTop);
+  const target = event.target as HTMLElement;
+  const position = Math.abs(target.scrollTop);
   if (
     position > scollLastPosition.value &&
-    Math.abs(event.target?.scrollTop || 0) / (event.target?.scrollHeight || 1) >
-      0.7
+    Math.abs(target.scrollTop || 0) / (target.scrollHeight || 1) > 0.7
   ) {
     await loadMoreMessages();
   }
