@@ -63,55 +63,60 @@ export default (): {
     const reader = stream.getReader();
     const decoder = new TextDecoder("utf-8");
     function readStream() {
-      reader.read().then(({ done, value }) => {
-        console.log({ done, value });
-        if (done) {
-          options.onUpdate("", { done: true });
-          return;
-        }
-        const text = decoder.decode(value, { stream: true });
-        const lines = text.trim().split("\n");
-        lines.forEach((line) => {
-          if (line.length < 1) return;
-          const value = isStream ? line.slice(6) : line;
-          if (value === "[DONE]") {
-            options.onUpdate("", { done: true });
+      reader
+        .read()
+        .then(({ done, value }) => {
+          if (done) {
+            options.onProgress("", { done: true });
             return;
           }
 
-          try {
-            const result = JSON.parse(value);
-            if (isStream) {
-              const [content] = result.choices;
-              options.onUpdate(content.delta?.content ?? "", {
-                done: false,
-              });
-            } else {
-              const [messageInfo] = result.choices;
-
-              options.onUpdate(messageInfo.message.content ?? "", {
-                done: true,
-              });
+          const text = decoder.decode(value, { stream: true });
+          if (text.startsWith("{")) {
+            const data = JSON.parse(text);
+            if (data && data.error) {
+              throw new Error(data.error.message);
             }
-          } catch (err) {
-            console.log({ value, err });
-            // throw err;
           }
-        });
 
-        readStream();
-      });
+          const lines = text.trim().split("\n");
+          lines.forEach((line) => {
+            if (line.length < 1) return;
+            const value = isStream ? line.slice(6) : line;
+            if (value === "[DONE]") {
+              options.onProgress("", { done: true });
+              return;
+            }
+
+            try {
+              const result = JSON.parse(value);
+              if (isStream) {
+                const [content] = result.choices;
+                options.onProgress(content.delta?.content ?? "", {
+                  done: false,
+                });
+              } else {
+                const [messageInfo] = result.choices;
+
+                options.onProgress(messageInfo.message.content ?? "", {
+                  done: true,
+                });
+              }
+            } catch (err) {
+              console.log({ value, err });
+              throw err;
+            }
+          });
+
+          readStream();
+        })
+        .catch((err) => {
+          console.log({ err });
+          options.onError && options.onError(err);
+        });
     }
 
     readStream();
-
-    // .then((response) => {
-
-    // })
-    // .catch((error) => {
-    //   console.log({ error });
-    //   throw error;
-    // });
   }
 
   return {

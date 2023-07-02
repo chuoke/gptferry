@@ -324,7 +324,7 @@ async function sendMessage(inputMessage: string) {
       carries: carries,
       system_prompt: props.chat.system_prompt,
       probability_mass: props.chat.probability_mass,
-      onUpdate: (content: string, options: { done: boolean }) => {
+      onProgress: (content: string, options: { done: boolean }) => {
         messages[0].content += content;
         receivedMessage.content += content;
 
@@ -339,14 +339,23 @@ async function sendMessage(inputMessage: string) {
           }
         }
       },
+      onError: (err: any) => {
+        $q.notify({
+          message: "message" in err ? err.message : err,
+          type: "negative",
+        });
+        removeMessage(receivedMessage.key);
+      },
     };
 
     await chatProvider.chat(chatOptions);
   } catch (err: any) {
+    console.log({ inmessageview: true, err });
     $q.notify({
       message: "message" in err ? err.message : err,
       type: "negative",
     });
+    removeMessage(loadingMsgKey.value);
   } finally {
     loadingMsgKey.value = "";
   }
