@@ -61,10 +61,22 @@
 </template>
 
 <script setup lang="ts">
+const props = withDefaults(
+  defineProps<{
+    loading?: boolean;
+  }>(),
+  {
+    loading: false,
+  }
+);
 const emits = defineEmits(["update:modelValue", "send"]);
 const message = ref("");
 
 function toSend() {
+  if (props.loading) {
+    return;
+  }
+
   emits("send", message.value);
   message.value = "";
 }

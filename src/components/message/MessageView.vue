@@ -146,7 +146,10 @@
     </q-page-container>
 
     <q-footer class="q-px-sm q-px-md-lg bg-transparent">
-      <MessageInput @send="sendMessage"></MessageInput>
+      <MessageInput
+        :loading="loadingMsgKey.length > 0"
+        @send="sendMessage"
+      ></MessageInput>
     </q-footer>
   </q-layout>
 </template>
@@ -345,6 +348,7 @@ async function sendMessage(inputMessage: string) {
           type: "negative",
         });
         removeMessage(receivedMessage.key);
+        loadingMsgKey.value = "";
       },
     };
 
@@ -356,7 +360,6 @@ async function sendMessage(inputMessage: string) {
       type: "negative",
     });
     removeMessage(loadingMsgKey.value);
-  } finally {
     loadingMsgKey.value = "";
   }
 }
