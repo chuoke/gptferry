@@ -331,7 +331,6 @@ async function sendMessage(inputMessage: string) {
         messages[0].content += content;
         receivedMessage.content += content;
 
-        // scrollToBottom();
         const { done } = options;
         if (done) {
           loadingMsgKey.value = "";
