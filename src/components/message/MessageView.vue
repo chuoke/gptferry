@@ -202,6 +202,10 @@ onMounted(async () => {
   await loadMoreMessages();
 });
 
+const currentModel = computed(() => {
+  return props.chat.model || currentServer.value?.model;
+});
+
 const messagePageRef = ref<Element | null>(null);
 
 function toOpenLeftDrawer() {
@@ -318,12 +322,13 @@ async function sendMessage(inputMessage: string) {
 
     const chatOptions = {
       message: sendMessage.content,
-      model: currentServer.value.model,
+      model: currentModel.value as string,
       api_base_url:
         currentServer.value.api_base_url ||
         currentServer.value.provider?.api_base_url ||
         "",
       api_key: currentServer.value.api_key,
+      max_tokens: props.chat.max_tokens || currentServer.value.max_tokens || undefined,
       carries: carries,
       system_prompt: props.chat.system_prompt,
       probability_mass: props.chat.probability_mass,

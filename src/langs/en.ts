@@ -43,6 +43,9 @@ export default {
       "0~1, the larger the value, the more random the result",
     model: "Model",
     model_hint: "If this is not selected, the server model is used",
+    max_tokens: "Max tokens",
+    max_tokens_hint:
+      "The maximum number of tokens to generate in this chat completion.",
   },
   message: {
     clear: "Clear messages",
@@ -59,8 +62,8 @@ export default {
       "Create server and chating, start getting inspiration and help from AI",
   },
   message_input: {
-    kbd_send: 'Send',
-    kbd_newline: 'Newline',
+    kbd_send: "Send",
+    kbd_newline: "Newline",
   },
   setting: {
     profile: "Profile",

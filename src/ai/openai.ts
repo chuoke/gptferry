@@ -1,4 +1,4 @@
-import { isNumber } from "lodash-es";
+import { isNumber, pickBy } from "lodash-es";
 import type { IChatOptions } from "./types";
 
 export default (): {
@@ -24,15 +24,19 @@ export default (): {
       });
     }
 
-    return {
-      model: options.model,
-      messages,
-      stream: true,
-      top_p:
-        "probability_mass" in options && isNumber(options.probability_mass)
-          ? options.probability_mass
-          : 1,
-    };
+    return pickBy(
+      {
+        model: options.model,
+        messages,
+        stream: true,
+        max_tokens: options.max_tokens,
+        top_p:
+          "probability_mass" in options && isNumber(options.probability_mass)
+            ? options.probability_mass
+            : 1,
+      },
+      (val) => val !== undefined
+    );
   }
 
   async function chat(options: IChatOptions) {

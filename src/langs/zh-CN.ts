@@ -40,6 +40,8 @@ export default {
     probability_mass_hint: "0~1，值越大结果越随机",
     model: "模型",
     model_hint: "不选则使用服务默认模型",
+    max_tokens: "最大令牌数",
+    max_tokens_hint: "在此聊天中完成生成内容的令牌最大数量",
   },
   message: {
     clear: "清除聊天记录",
@@ -54,8 +56,8 @@ export default {
     view_empty_msg: "创建服务和聊天，开始从AI获取灵感和帮助",
   },
   message_input: {
-    kbd_send: '发送',
-    kbd_newline: '换行',
+    kbd_send: "发送",
+    kbd_newline: "换行",
   },
   setting: {
     profile: "个人信息",

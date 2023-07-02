@@ -55,18 +55,6 @@
           :hint="$t('chat.carried_message_count_hint')"
         />
 
-        <q-input
-          v-model="modelValue.probability_mass"
-          outlined
-          dense
-          type="number"
-          :step="0.1"
-          :max="1"
-          :min="0"
-          :label="$t('chat.probability_mass')"
-          :hint="$t('chat.probability_mass_hint')"
-        />
-
         <q-select
           v-model="modelValue.model"
           :options="models"
@@ -86,6 +74,29 @@
             </q-item>
           </template>
         </q-select>
+
+        <q-input
+          v-model="modelValue.max_tokens"
+          outlined
+          dense
+          type="number"
+          :step="1"
+          :min="0"
+          :label="$t('chat.max_tokens')"
+          :hint="$t('chat.max_tokens_hint')"
+        />
+
+        <q-input
+          v-model="modelValue.probability_mass"
+          outlined
+          dense
+          type="number"
+          :step="0.1"
+          :max="1"
+          :min="0"
+          :label="$t('chat.probability_mass')"
+          :hint="$t('chat.probability_mass_hint')"
+        />
       </q-form>
     </q-card-section>
 

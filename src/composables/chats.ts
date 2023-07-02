@@ -14,6 +14,7 @@ export interface IChat {
   system_prompt: string;
   probability_mass: number; // 概率质量
   carried_message_count: number;
+  max_tokens?: number;
   used_at: number; // unix timestamp
   created_at: number; // unix timestamp
   updated_at: number; // unix timestamp

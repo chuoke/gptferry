@@ -36,7 +36,7 @@ function defaultServer() {
     api_base_url: "",
     api_key: "",
     api_version: "",
-    max_tokens: 4096,
+    max_tokens: undefined,
     created_at: Date.now() / 1000,
     updated_at: Date.now() / 1000,
   };
