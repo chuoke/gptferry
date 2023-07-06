@@ -26,7 +26,7 @@ const { locales, setLocale } = useLocales();
 const modelValue = ref(locale.value);
 
 watch(
-  () => modelValue.value,
+  () => modelValue.value as string,
   (val) => {
     locale.value = val;
     setLocale(val);
