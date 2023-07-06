@@ -8,16 +8,16 @@
 
     <q-card-section class="text-center text-subtitle1">
       <span style="opacity: 0.7">Made</span>
-      <span style="opacity: 0.7">with </span>
+      <span style="opacity: 0.7"> with </span>
       <span>🔥❤️</span>
       by
       <a
         href="https://github.com/chuoke"
         target="_blank"
-        rel="noopener noreferrer"
+        rel="noopener"
         class="text-subtitle2 text-weight-bold"
       >
-        chuoke
+        @chuoke
       </a>
     </q-card-section>
   </q-card>
