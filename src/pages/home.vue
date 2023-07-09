@@ -69,16 +69,6 @@ const { settingDialogOpen, open: openSettingDialog } = useSettingDialog();
           <q-img src="/logo.png"></q-img>
         </q-avatar>
         <div class="font-bold">GPT Ferry</div>
-        <div class="relative">
-          &nbsp;
-          <q-badge color="orange" floating>
-            i
-            <q-tooltip class="bg-primary">
-              NOT READY!! <br />
-              Currently in the experimental stage
-            </q-tooltip>
-          </q-badge>
-        </div>
 
         <q-space />
 
