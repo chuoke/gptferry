@@ -1,6 +1,6 @@
 {
   "extends": "./tsconfig.common.json",
-  "include": ["vite.config.ts", "vitest.config.ts", "playwright.config.ts", "package.json"],
+  "include": ["vite.config.ts", "vitest.config.ts", "playwright.config.ts", "package.json", "manifest.ts"],
   "compilerOptions": {
     "composite": true,
     "types": ["node"]

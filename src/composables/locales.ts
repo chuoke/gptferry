@@ -11,6 +11,8 @@ const locales = [
   },
 ];
 
+const locale = useStorage<string>("locale", "");
+
 export const useLocales = (): {
   locale: RemovableRef<string>;
   locales: {
@@ -19,8 +21,6 @@ export const useLocales = (): {
   }[];
   setLocale: (locale: string) => void;
 } => {
-  const locale = useStorage<string>("locale", "");
-
   function setLocale(val: string) {
     locale.value = val;
   }
