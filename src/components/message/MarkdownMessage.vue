@@ -29,7 +29,8 @@ const htmlStr = computed(() => {
   // str2html(props.text) + (props.loading ? "<span class='typing'></span>" : "")
 });
 
-const md = new MarkdownIt({
+let md: MarkdownIt;
+md = new MarkdownIt({
   breaks: true,
   highlight: function (str, lang) {
     let highlightedText = "";
