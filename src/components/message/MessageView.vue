@@ -34,7 +34,7 @@
           dense
           flat
           round
-          icon="menu"
+          :icon="rightDrawerOpen ? 'close' : 'menu'"
           @click="rightDrawerOpen = !rightDrawerOpen"
         />
       </q-toolbar>
@@ -45,6 +45,7 @@
       side="right"
       class="bg-second"
       :width="385"
+      :breakpoint="100"
     >
       <MessageSearcher :chat="chat" />
     </q-drawer>
