@@ -56,10 +56,13 @@ export default {
     cipy_failed: "Content copy failure",
     favorite: "Like",
     unfavorite: "Unlike",
+    favorited: "Favorited",
     delete: "Delete",
     delete_confirm: "Are you sure you want to delete this record?",
     view_empty_msg:
       "Create server and chating, start getting inspiration and help from AI",
+    sort_latest: "Latest",
+    sort_oldest: "Oldest",
   },
   message_input: {
     kbd_send: "Send",

@@ -30,19 +30,24 @@
           :title="$t('message.clear')"
           @click="toClearMessages"
         ></q-btn>
-        <q-btn dense flat round icon="menu" />
+        <q-btn
+          dense
+          flat
+          round
+          icon="menu"
+          @click="rightDrawerOpen = !rightDrawerOpen"
+        />
       </q-toolbar>
     </q-header>
 
-    <!-- <q-drawer
+    <q-drawer
       v-model="rightDrawerOpen"
-      show-if-above
       side="right"
       class="bg-second"
+      :width="385"
     >
-      <q-item-label header>Prompt Tips</q-item-label>
-      <prompt-tips></prompt-tips>
-    </q-drawer> -->
+      <MessageSearcher :chat="chat" />
+    </q-drawer>
     <q-page-container>
       <q-page>
         <div
@@ -159,13 +164,13 @@ import type { IChat } from "@/composables/chats";
 import { useMessages, type IMessage } from "@/composables/messages";
 import { useServers, type IServer } from "@/composables/servers";
 import { useQuasar, copyToClipboard, throttle } from "quasar";
-// import PromptTips from "@/components/prompt/prompt-tips.vue";
 import { useAI } from "@/ai";
 import MarkdownMessage from "@/components/message/MarkdownMessage.vue";
 import { useServerFormDialog } from "@/composables/server-form-dialog";
 import { useUserProfile } from "@/composables/user";
 import { useI18n } from "vue-i18n";
 import MessageInput from "@/components/message/MessageInput.vue";
+import MessageSearcher from "@/components/message/MessageSearcher.vue";
 
 const props = defineProps<{
   chat: IChat;
@@ -175,7 +180,7 @@ const emits = defineEmits(["open-drawer"]);
 const $q = useQuasar();
 const { t: translate } = useI18n();
 
-// const rightDrawerOpen = ref(true);
+const rightDrawerOpen = ref(false);
 const messageContainerRef = ref<Element | null>(null);
 
 const {
@@ -328,7 +333,8 @@ async function sendMessage(inputMessage: string) {
         currentServer.value.provider?.api_base_url ||
         "",
       api_key: currentServer.value.api_key,
-      max_tokens: props.chat.max_tokens || currentServer.value.max_tokens || undefined,
+      max_tokens:
+        props.chat.max_tokens || currentServer.value.max_tokens || undefined,
       carries: carries,
       system_prompt: props.chat.system_prompt,
       probability_mass: props.chat.probability_mass,
