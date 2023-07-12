@@ -67,7 +67,10 @@ md = new MarkdownIt({
   },
 });
 
-function str2html(str: string, model: string = "render") {
+function str2html(
+  str: string,
+  model: "render" | "renderInline" = "render"
+) {
   // eslint-disable-next-line security/detect-object-injection
   return model in md ? md[model](str) : str;
 }
