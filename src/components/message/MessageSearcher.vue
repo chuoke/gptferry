@@ -8,7 +8,7 @@
           dense
           outlined
           class="full-width"
-          @keydown.enter="search"
+          @keydown.enter="searchNow"
         >
           <template #append>
             <q-icon v-if="!filter.keywords" name="search" />
@@ -42,7 +42,12 @@
 
     <q-page-container>
       <q-page padding>
-        <q-infinite-scroll :offset="250" @load="loadMore">
+        <q-infinite-scroll
+          ref="scrollRef"
+          :debounce="500"
+          :offset="250"
+          @load="loadMore"
+        >
           <TransitionGroup>
             <q-chat-message
               v-for="message of results"
@@ -98,7 +103,7 @@ import type { IChat } from "@/composables/chats";
 import { useDB } from "@/composables/db";
 import { useMessages, type IMessage } from "@/composables/messages";
 import { isBoolean } from "lodash-es";
-import { debounce, useQuasar, copyToClipboard } from "quasar";
+import { debounce, useQuasar, copyToClipboard, QInfiniteScroll } from "quasar";
 import { useI18n } from "vue-i18n";
 
 const props = defineProps<{
@@ -108,6 +113,7 @@ const props = defineProps<{
 const $q = useQuasar();
 const { t: translate } = useI18n();
 
+const scrollRef = ref<QInfiniteScroll>();
 const hasMore = ref(false);
 const filter = ref({
   keywords: "",
@@ -127,7 +133,7 @@ watch(
 );
 
 const triggerSearch = debounce(() => {
-  search(filter.value);
+  searchNow();
 }, 2000);
 
 const { remove: removeMessage, favorite: favoriteMessage } = useMessages(
@@ -136,6 +142,13 @@ const { remove: removeMessage, favorite: favoriteMessage } = useMessages(
 
 let results = reactive<IMessage[]>([]);
 const searching = ref(false);
+
+const searchNow = () => {
+  scrollRef.value?.reset();
+  scrollRef.value?.resume();
+  scrollRef.value?.trigger();
+};
+
 const search = async (params?: any) => {
   params = params || { ...filter.value };
   console.log({ params });
@@ -149,6 +162,7 @@ const search = async (params?: any) => {
       params.favorited !== true &&
       (!params.keywords || 0 >= params.keywords.trim().length)
     ) {
+      hasMore.value = false;
       return;
     }
 
@@ -176,10 +190,10 @@ const search = async (params?: any) => {
       query = query.filter((item) => item.content.includes(searchText));
     }
 
-    const data = await query.offset(results.length).limit(50).toArray();
+    const data = await query.offset(results.length).limit(10).toArray();
     results.push(...data);
 
-    hasMore.value = data.length >= 50;
+    hasMore.value = data.length >= 10;
 
     console.log({ results });
   } catch (err: any) {
@@ -190,8 +204,12 @@ const search = async (params?: any) => {
 };
 
 async function loadMore(index: number, done: (stop?: boolean) => void) {
-  await search();
-  done();
+  console.log({ index });
+  if (hasMore.value) {
+    await search();
+  }
+
+  done(!hasMore.value);
 }
 
 function toDeleteMessage(message: IMessage) {
