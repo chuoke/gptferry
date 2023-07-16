@@ -1,0 +1,6 @@
+.github
+dev-dist
+dist
+docker
+node_modules
+tests
