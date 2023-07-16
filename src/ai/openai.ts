@@ -56,6 +56,7 @@ export default (): {
           "Content-Type": "application/json",
           Authorization: "Bearer " + options.api_key,
         },
+        signal: options.abort_signal,
       }
     );
 

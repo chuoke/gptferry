@@ -7,6 +7,7 @@ export interface IChatOptions {
   carries: { role: string; content: string }[];
   system_prompt: string;
   probability_mass?: number;
+  abort_signal?: AbortSignal;
   onProgress: (content: string, options: { done: boolean }) => void;
   onError: (err: any) => void;
 }

@@ -56,102 +56,134 @@
           class="message-list-container"
           @scroll="handleScroll"
         >
-          <q-chat-message
-            v-for="message of messages"
-            :key="message.key"
-            :text="[message.conent]"
-            :sent="message.role === 'user'"
-          >
-            <template #avatar>
-              <q-avatar
-                v-if="message.role !== 'user'"
-                class="q-message-avatar q-message-avatar--received"
-              >
-                <img :src="chat.avatar || currentServer?.avatar" />
-              </q-avatar>
-              <q-avatar v-else class="q-message-avatar q-message-avatar--sent">
-                <img
-                  v-if="userProfile.avatar"
-                  :src="userProfile.avatar"
-                  :alt="userProfile.name"
-                />
-                <q-icon v-else name="account_circle"></q-icon>
-              </q-avatar>
-            </template>
-            <div style="min-width: 50px; min-height: 10px">
-              <markdown-message
-                :text="message.content"
-                :loading="message.key === loadingMsgKey"
-              ></markdown-message>
+          <TransitionGroup>
+            <q-chat-message
+              v-for="message of messages"
+              :key="message.key"
+              :text="[message.conent]"
+              :sent="message.role === 'user'"
+            >
+              <template #avatar>
+                <q-avatar
+                  v-if="message.role !== 'user'"
+                  class="q-message-avatar q-message-avatar--received"
+                >
+                  <img :src="chat.avatar || currentServer?.avatar" />
+                </q-avatar>
+                <q-avatar
+                  v-else
+                  class="q-message-avatar q-message-avatar--sent"
+                >
+                  <img
+                    v-if="userProfile.avatar"
+                    :src="userProfile.avatar"
+                    :alt="userProfile.name"
+                  />
+                  <q-icon v-else name="account_circle"></q-icon>
+                </q-avatar>
+              </template>
 
-              <q-icon
-                size="xs"
-                name="more_horiz"
-                right
-                class="q-pa-none absolute-bottom-right text-caption text-weight-light cursor-pointer"
-                style="opacity: 0.6; font-size: 14px"
-              >
-                <q-menu>
-                  <q-list dense style="min-width: 150px" class="q-pa-sm">
-                    <q-item
-                      v-close-popup
-                      clickable
-                      class="rounded q-px-xs"
-                      @click="toCopyContent(message.content)"
-                    >
-                      <q-item-section>
-                        {{ $t("message.copy") }}
-                      </q-item-section>
-                      <q-item-section side>
-                        <q-icon name="content_copy" size="xs"></q-icon>
-                      </q-item-section>
-                    </q-item>
-                    <q-item
-                      v-close-popup
-                      clickable
-                      class="rounded q-px-xs"
-                      @click="favorite(message)"
-                    >
-                      <q-item-section>
-                        {{
-                          message.favorited
-                            ? $t("message.unfavorite")
-                            : $t("message.favorite")
-                        }}
-                      </q-item-section>
-                      <q-item-section side>
-                        <q-icon
-                          :name="
-                            message.favorited ? 'favorite' : 'favorite_border'
-                          "
-                          :color="message.favorited ? 'red-7' : ''"
-                          size="xs"
-                        ></q-icon>
-                      </q-item-section>
-                    </q-item>
-                    <q-item
-                      v-close-popup
-                      clickable
-                      class="rounded q-px-xs"
-                      @click="toDeleteMessage(message)"
-                    >
-                      <q-item-section>
-                        {{ $t("message.delete") }}
-                      </q-item-section>
-                      <q-item-section side>
-                        <q-icon name="delete_forever" size="xs"></q-icon>
-                      </q-item-section>
-                    </q-item>
-                  </q-list>
-                </q-menu>
-              </q-icon>
-            </div>
-          </q-chat-message>
+              <div style="min-width: 50px; min-height: 10px">
+                <markdown-message
+                  :text="message.content"
+                  :loading="message.key === loadingMsgKey"
+                ></markdown-message>
+              </div>
+
+              <template #stamp>
+                <div class="row absolute-bottom-right q-pr-sm">
+                  <q-space></q-space>
+
+                  <q-icon
+                    size="xs"
+                    name="more_horiz"
+                    class="q-pa-none text-caption text-weight-light cursor-pointer"
+                    style="opacity: 0.6; font-size: 14px"
+                  >
+                    <q-menu>
+                      <q-list dense style="min-width: 150px" class="q-pa-sm">
+                        <q-item
+                          v-close-popup
+                          clickable
+                          class="rounded q-px-xs"
+                          @click="toCopyContent(message.content)"
+                        >
+                          <q-item-section>
+                            {{ $t("message.copy") }}
+                          </q-item-section>
+                          <q-item-section side>
+                            <q-icon name="content_copy" size="xs"></q-icon>
+                          </q-item-section>
+                        </q-item>
+                        <q-item
+                          v-close-popup
+                          clickable
+                          class="rounded q-px-xs"
+                          @click="favorite(message)"
+                        >
+                          <q-item-section>
+                            {{
+                              message.favorited
+                                ? $t("message.unfavorite")
+                                : $t("message.favorite")
+                            }}
+                          </q-item-section>
+                          <q-item-section side>
+                            <q-icon
+                              :name="
+                                message.favorited
+                                  ? 'favorite'
+                                  : 'favorite_border'
+                              "
+                              :color="message.favorited ? 'red-7' : ''"
+                              size="xs"
+                            ></q-icon>
+                          </q-item-section>
+                        </q-item>
+                        <q-separator></q-separator>
+                        <q-item
+                          v-close-popup
+                          clickable
+                          class="rounded q-px-xs"
+                          @click="toDeleteMessage(message)"
+                        >
+                          <q-item-section>
+                            {{ $t("message.delete") }}
+                          </q-item-section>
+                          <q-item-section side>
+                            <q-icon name="delete_forever" size="xs"></q-icon>
+                          </q-item-section>
+                        </q-item>
+                      </q-list>
+                    </q-menu>
+                  </q-icon>
+                </div>
+              </template>
+            </q-chat-message>
+          </TransitionGroup>
         </div>
       </q-page>
     </q-page-container>
 
     <q-footer class="q-px-sm q-px-md-lg bg-transparent">
+      <div class="q-mb-xs text-caption text-weight-light">
+        <q-icon
+          name="replay"
+          size="xs"
+          class="cursor-pointer q-mr-sm"
+          style="opacity: 0.6"
+          @click="retry"
+        ></q-icon>
+        <q-icon
+          v-show="loadingMsgKey"
+          name="power_settings_new"
+          size="xs"
+          color="red"
+          class="cursor-pointer q-mr-sm"
+          style="opacity: 0.6"
+          @click="stopReceiveMessage"
+        ></q-icon>
+      </div>
       <MessageInput
         :loading="loadingMsgKey.length > 0"
         @send="sendMessage"
@@ -198,7 +230,7 @@ const { servers } = useServers();
 const currentServer = computed(() => {
   return servers.value.find(
     (server: IServer) => server.key === props.chat.server_key
-  );
+  ) as IServer;
 });
 
 const { userProfile } = useUserProfile();
@@ -288,32 +320,41 @@ const loadingMsgKey = ref<string>("");
 const chatProvider = useAI(currentServer.value?.provider_key as string);
 
 async function sendMessage(inputMessage: string) {
+  if (!checkApiKeySetted()) {
+    return;
+  }
+
+  if (loadingMsgKey.value || !inputMessage) {
+    return;
+  }
+
+  const sentMessage = await addMessage({
+    finished: true,
+    role: "user",
+    content: inputMessage,
+    model: props.chat.model || currentServer.value.model,
+  });
+
+  await doSendMessage(sentMessage);
+}
+
+const abortController = ref<AbortController>();
+async function doSendMessage(message: IMessage) {
   try {
-    if (!currentServer.value?.api_key) {
-      $q.notify({
-        type: "negative",
-        message: translate("server.api_key_empty_notice"),
-      });
-      openServerForm(currentServer.value);
+    if (!checkApiKeySetted()) {
       return;
     }
 
-    if (loadingMsgKey.value || !inputMessage) {
+    if (loadingMsgKey.value) {
       return;
     }
 
     loadingMsgKey.value = "...";
 
+    abortController.value = new AbortController();
     const carries = messages
-      .slice(0, props.chat.carried_message_count || 10)
+      .slice(1, props.chat.carried_message_count || 10)
       .reverse();
-
-    const sendMessage = await addMessage({
-      finished: true,
-      role: "user",
-      content: inputMessage,
-      model: props.chat.model || currentServer.value.model,
-    });
 
     const receivedMessage = await addMessage({
       finished: false,
@@ -327,18 +368,19 @@ async function sendMessage(inputMessage: string) {
     loadingMsgKey.value = receivedMessage.key;
 
     const chatOptions = {
-      message: sendMessage.content,
+      message: message.content,
       model: currentModel.value as string,
       api_base_url:
         currentServer.value.api_base_url ||
         currentServer.value.provider?.api_base_url ||
         "",
-      api_key: currentServer.value.api_key,
+      api_key: currentServer.value.api_key as string,
       max_tokens:
         props.chat.max_tokens || currentServer.value.max_tokens || undefined,
       carries: carries,
       system_prompt: props.chat.system_prompt,
       probability_mass: props.chat.probability_mass,
+      abort_signal: abortController.value?.signal,
       onProgress: (content: string, options: { done: boolean }) => {
         messages[0].content += content;
         receivedMessage.content += content;
@@ -354,29 +396,74 @@ async function sendMessage(inputMessage: string) {
         }
       },
       onError: (err: any) => {
-        $q.notify({
-          message: "message" in err ? err.message : err,
-          type: "negative",
-        });
-        removeMessage(receivedMessage.key);
-        loadingMsgKey.value = "";
+        handleReceiveError(err);
       },
     };
 
     await chatProvider.chat(chatOptions);
   } catch (err: any) {
-    console.log({ inmessageview: true, err });
-    $q.notify({
-      message: "message" in err ? err.message : err,
-      type: "negative",
-    });
-    removeMessage(loadingMsgKey.value);
-    loadingMsgKey.value = "";
+    handleReceiveError(err);
   }
+}
+
+function retry() {
+  const lastUserIndex = messages.findIndex((item) => item.role === "user");
+
+  if (lastUserIndex > 0) {
+    const discardedMessages = messages.splice(0, lastUserIndex);
+    discardedMessages.map((item) => removeMessage(item.key));
+  }
+
+  if (messages.length > 0) {
+    doSendMessage(messages[0]);
+  }
+}
+
+function handleReceiveError(err: any) {
+  console.log({ inmessageview: true, err });
+  $q.notify({
+    message: "message" in err ? err.message : err,
+    type: "negative",
+  });
+
+  const receivingMessage = messages.find(
+    (message) => message.key === loadingMsgKey.value
+  );
+  const isAbortError = !!err.name && err.name === "AbortError";
+
+  if (
+    !isAbortError ||
+    (receivingMessage && !receivingMessage.content.trim().length)
+  ) {
+    removeMessage(loadingMsgKey.value);
+  }
+  loadingMsgKey.value = "";
+}
+
+function stopReceiveMessage() {
+  if (!abortController.value) {
+    return;
+  }
+
+  abortController.value.abort();
+  loadingMsgKey.value = "";
 }
 
 async function favorite(message: IMessage) {
   await favoriteMessage(message);
+}
+
+function checkApiKeySetted() {
+  if (!currentServer.value?.api_key) {
+    $q.notify({
+      type: "negative",
+      message: translate("server.api_key_empty_notice"),
+    });
+    openServerForm(currentServer.value);
+    return false;
+  }
+
+  return true;
 }
 </script>
 
