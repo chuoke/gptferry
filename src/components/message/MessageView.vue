@@ -91,7 +91,7 @@
               </div>
 
               <template #stamp>
-                <div class="row absolute-bottom-right q-pr-sm">
+                <div class="row absolute-bottom-right">
                   <q-space></q-space>
 
                   <q-icon
@@ -166,10 +166,11 @@
     </q-page-container>
 
     <q-footer class="q-px-sm q-px-md-lg bg-transparent">
-      <div class="q-mb-xs text-caption text-weight-light">
+      <div class="q-mb-xs text-weight-light">
         <q-icon
           name="replay"
           size="xs"
+          color="secondary"
           class="cursor-pointer q-mr-sm"
           style="opacity: 0.6"
           @click="retry"
@@ -229,7 +230,7 @@ const { open: openServerForm } = useServerFormDialog();
 const { servers } = useServers();
 const currentServer = computed(() => {
   return servers.value.find(
-    (server: IServer) => server.key === props.chat.server_key
+    (server: IServer) => server.key === props.chat.server_key,
   ) as IServer;
 });
 
@@ -427,7 +428,7 @@ function handleReceiveError(err: any) {
   });
 
   const receivingMessage = messages.find(
-    (message) => message.key === loadingMsgKey.value
+    (message) => message.key === loadingMsgKey.value,
   );
   const isAbortError = !!err.name && err.name === "AbortError";
 

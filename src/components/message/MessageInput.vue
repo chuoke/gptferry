@@ -8,6 +8,7 @@
     type="textarea"
     :rows="1"
     autogrow
+    class="message-input"
     @keydown.enter.exact.prevent
     @keyup.enter.exact="toSend"
     @keydown.tab.exact="toTab($event)"
@@ -67,7 +68,7 @@ const props = withDefaults(
   }>(),
   {
     loading: false,
-  }
+  },
 );
 const emits = defineEmits(["update:modelValue", "send"]);
 const message = ref("");
@@ -105,3 +106,12 @@ function toTab(event: KeyboardEvent) {
   });
 }
 </script>
+
+<style lang="scss">
+.message-input {
+  & textarea {
+    max-height: 500px;
+    overflow-y: auto;
+  }
+}
+</style>
