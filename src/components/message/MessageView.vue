@@ -411,8 +411,8 @@ function retry() {
   const lastUserIndex = messages.findIndex((item) => item.role === "user");
 
   if (lastUserIndex > 0) {
-    const discardedMessages = messages.splice(0, lastUserIndex);
-    discardedMessages.map((item) => removeMessage(item.key));
+    const discardedMessages = messages.slice(0, lastUserIndex);
+    discardedMessages.map(async (item) => await removeMessage(item.key));
   }
 
   if (messages.length > 0) {
