@@ -1,4 +1,5 @@
 import openai from "@/ai/openai";
+import anthropic from "@/ai/anthropic";
 import type { IChatOptions } from "@/ai/types";
 
 export const useAI = (
@@ -8,6 +9,8 @@ export const useAI = (
 } => {
   if (provider === "chatgpt") {
     return openai();
+  } else if (provider === 'anthropic') {
+    return anthropic();
   }
 
   throw new Error("服务提供者为适配");

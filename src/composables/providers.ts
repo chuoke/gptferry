@@ -54,6 +54,30 @@ const providers: IProvider[] = [
       },
     ],
   },
+  {
+    key: "anthropic",
+    name: "Claude",
+    avatar: "/providers/anthropic/logo.png",
+    api_base_url: "https://api.anthropic.com/",
+    api_version: "v1",
+    homepage: "https://www.anthropic.com",
+    models: [
+      {
+        value: "claude-2.0",
+        label: "claude-2",
+        max_token: 100000,
+        description:
+          "Superior performance on tasks that require complex reasoning",
+      },
+      {
+        value: "claude-instant-1.1",
+        label: "claude-instant-1",
+        max_token: 100000,
+        description:
+          "Low-latency, high throughout",
+      },
+    ],
+  },
 ];
 
 export const useProviders = (): {
@@ -61,6 +85,7 @@ export const useProviders = (): {
   find: (key: string) => IProvider | undefined;
 } => {
   function find(key: string): IProvider | undefined {
+    console.log({key});
     return providers.find((provider) => provider.key === key);
   }
 
