@@ -98,7 +98,7 @@
                     size="xs"
                     name="more_horiz"
                     class="q-pa-none text-caption text-weight-light cursor-pointer"
-                    style="opacity: 0.6; font-size: 14px"
+                    style="opacity: 0.8; font-size: 14px"
                   >
                     <q-menu>
                       <q-list dense style="min-width: 150px" class="q-pa-sm">
