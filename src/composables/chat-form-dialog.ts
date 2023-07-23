@@ -1,11 +1,11 @@
 import type { IChat } from "./chats";
 
-const chatFormDialogOpen = ref(false);
 const chatModel = ref<IChat | null>();
+const chatFormDialogOpen = ref(false);
 
 export const useChatFormDialog = () => {
-  function open(chat?: IChat | null) {
-    chatModel.value = chat;
+  function open(chat: IChat | Partial<IChat>) {
+    chatModel.value = chat as IChat;
     chatFormDialogOpen.value = true;
   }
 

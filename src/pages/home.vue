@@ -5,10 +5,12 @@ import ChatView from "@/components/chat/ChatView.vue";
 import { useThemeMode } from "@/composables/theme-mode";
 import { useServers, type IServer } from "@/composables/servers";
 import ServerForm from "@/components/server/ServerForm.vue";
+import ChatForm from '@/components/chat/ChatForm.vue';
 import { useServerFormDialog } from "@/composables/server-form-dialog";
 import { useSettingDialog } from "@/composables/setting-dialog";
 import SettingView from "@/components/settings/SettingView.vue";
 import { useLeftDrawer } from "@/composables/left-drawer";
+import { useChatFormDialog } from "@/composables/chat-form-dialog";
 
 // useRoute, useHead, and HelloWorld are automatically imported. See vite.config.ts for details.
 const route = useRoute();
@@ -37,6 +39,7 @@ const {
   open: openServerForm,
   serverModel,
 } = useServerFormDialog();
+const { chatFormDialogOpen } = useChatFormDialog();
 
 function toAddServer() {
   openServerForm();
@@ -161,11 +164,7 @@ const { settingDialogOpen, open: openSettingDialog } = useSettingDialog();
 
     <q-page-container class="overflow-hidden">
       <q-page class="">
-        <transition-group
-          appear
-          enter-active-class="animated fadeIn"
-          leave-active-class="animated fadeOut"
-        >
+        <transition-group name="fade">
           <chat-view
             v-for="server of servers"
             v-show="server.key === activeServerKey"
@@ -174,8 +173,12 @@ const { settingDialogOpen, open: openSettingDialog } = useSettingDialog();
             @deleted="handleServerDeleted"
           ></chat-view>
         </transition-group>
+
       </q-page>
     </q-page-container>
+    <q-dialog v-model="chatFormDialogOpen">
+      <chat-form></chat-form>
+    </q-dialog>
   </q-layout>
 </template>
 

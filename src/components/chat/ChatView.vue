@@ -3,7 +3,7 @@
     container
     view="lHh lpR lFr"
     style="height: calc(100vh - 24px)"
-    class="bg-tertiary overflow-hidden"
+    class="chat-view bg-tertiary overflow-hidden"
   >
     <q-drawer
       v-model="chatMenuDrawerOpen"
@@ -166,11 +166,7 @@
 
     <q-page-container>
       <q-page>
-        <transition-group
-          appear
-          enter-active-class="animated fadeIn"
-          leave-active-class="animated fadeOut"
-        >
+        <transition-group name="fade">
           <template v-if="chats.length">
             <message-view
               v-for="chat of chats"
@@ -186,28 +182,17 @@
             key="empty"
           />
         </transition-group>
-
-        <q-dialog v-model="chatFormDialogOpen">
-          <chat-form
-            :chat="chatModel"
-            :models="models"
-            @save="saveChat"
-            @cancel="closeChatForm"
-          ></chat-form>
-        </q-dialog>
       </q-page>
     </q-page-container>
   </q-layout>
 </template>
 
 <script setup lang="ts">
-import { useChats, type IChat, type IChatNew } from "@/composables/chats";
+import { useChats, type IChat } from "@/composables/chats";
 import ChatList from "@/components/chat/ChatList.vue";
 import MessageView from "@/components/message/MessageView.vue";
 import { useQuasar } from "quasar";
-import ChatForm from "@/components/chat/ChatForm.vue";
 import type { IServer } from "@/composables/servers";
-import { useProviders } from "@/composables/providers";
 import { useServerFormDialog } from "@/composables/server-form-dialog";
 import { useChatFormDialog } from "@/composables/chat-form-dialog";
 import MessageEmptyView from "@/components/message/MessageEmptyView.vue";
@@ -224,33 +209,23 @@ const { chatMenuDrawerOpen, open: openLeftDrawer } = useLeftDrawer();
 const $q = useQuasar();
 const { t: translate } = useI18n();
 
-const { find: findProvider } = useProviders();
-const provider = computed(() => {
-  return findProvider(props.server.provider_key);
-});
-const models = computed(() => {
-  return provider.value ? provider.value.models : [];
-});
-
 const {
   chats,
   activeChatKey,
-  add: addChat,
-  update: updateChat,
   remove: removeChat,
   clear: clearChat,
   active: activeChat,
 } = useChats(props.server.key);
 
-const {
-  chatFormDialogOpen,
-  close: closeChatForm,
-  open: openChatForm,
-  chatModel,
-} = useChatFormDialog();
+const { open: openChatForm } = useChatFormDialog();
 
 function toAddChat() {
-  openChatForm();
+  openChatForm({
+    server_key: props.server.key,
+    provider_key: props.server.provider_key,
+    model: "",
+    system_prompt: "",
+  });
 }
 
 function toDeleteServer() {
@@ -261,21 +236,6 @@ function toDeleteServer() {
   }).onOk(() => {
     emits("deleted", props.server);
   });
-}
-
-async function saveChat(val: Partial<IChat>) {
-  console.log({ val });
-  if ("key" in val && val.key) {
-    await updateChat(val as IChat);
-  } else {
-    const chat = await addChat({
-      ...(val as IChatNew),
-    });
-
-    activeChat(chat);
-  }
-
-  closeChatForm();
 }
 
 function toClearChat() {
@@ -301,6 +261,12 @@ const { open: openServerForm } = useServerFormDialog();
 </script>
 
 <style lang="scss">
+.chat-view {
+  & .scroll {
+    overflow: hidden;
+  }
+}
+
 .chat-view-list {
   .q-scrollarea__content {
     max-width: 100%;

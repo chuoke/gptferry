@@ -4,7 +4,7 @@
     view="hHh lpR fFr"
     container
     style="height: calc(100vh - 24px)"
-    class="bg-first text-first"
+    class="message-view bg-first text-first"
   >
     <q-header class="shadow-1 bg-first text-first">
       <q-toolbar>
@@ -56,111 +56,104 @@
           class="message-list-container"
           @scroll="handleScroll"
         >
-          <TransitionGroup>
-            <q-chat-message
-              v-for="message of messages"
-              :key="message.key"
-              :text="[message.conent]"
-              :sent="message.role === 'user'"
-            >
-              <template #avatar>
-                <q-avatar
-                  v-if="message.role !== 'user'"
-                  class="q-message-avatar q-message-avatar--received"
-                >
-                  <img :src="chat.avatar || currentServer?.avatar" />
-                </q-avatar>
-                <q-avatar
-                  v-else
-                  class="q-message-avatar q-message-avatar--sent"
-                >
-                  <img
-                    v-if="userProfile.avatar"
-                    :src="userProfile.avatar"
-                    :alt="userProfile.name"
-                  />
-                  <q-icon v-else name="account_circle"></q-icon>
-                </q-avatar>
-              </template>
+          <q-chat-message
+            v-for="message of messages"
+            :key="message.key"
+            :text="[message.conent]"
+            :sent="message.role === 'user'"
+          >
+            <template #avatar>
+              <q-avatar
+                v-if="message.role !== 'user'"
+                class="q-message-avatar q-message-avatar--received"
+              >
+                <img :src="chat.avatar || currentServer?.avatar" />
+              </q-avatar>
+              <q-avatar v-else class="q-message-avatar q-message-avatar--sent">
+                <img
+                  v-if="userProfile.avatar"
+                  :src="userProfile.avatar"
+                  :alt="userProfile.name"
+                />
+                <q-icon v-else name="account_circle"></q-icon>
+              </q-avatar>
+            </template>
 
-              <div style="min-width: 50px; min-height: 10px">
-                <markdown-message
-                  :text="message.content"
-                  :loading="message.key === loadingMsgKey"
-                ></markdown-message>
+            <div style="min-width: 50px; min-height: 10px">
+              <markdown-message
+                :text="message.content"
+                :loading="message.key === loadingMsgKey"
+              ></markdown-message>
+            </div>
+
+            <template #stamp>
+              <div class="row absolute-bottom-right">
+                <q-space></q-space>
+
+                <q-icon
+                  size="xs"
+                  name="more_horiz"
+                  class="q-pa-none text-caption text-weight-light cursor-pointer"
+                  style="opacity: 0.8; font-size: 14px"
+                >
+                  <q-menu>
+                    <q-list dense style="min-width: 150px" class="q-pa-sm">
+                      <q-item
+                        v-close-popup
+                        clickable
+                        class="rounded q-px-xs"
+                        @click="toCopyContent(message.content)"
+                      >
+                        <q-item-section>
+                          {{ $t("message.copy") }}
+                        </q-item-section>
+                        <q-item-section side>
+                          <q-icon name="content_copy" size="xs"></q-icon>
+                        </q-item-section>
+                      </q-item>
+                      <q-item
+                        v-close-popup
+                        clickable
+                        class="rounded q-px-xs"
+                        @click="favorite(message)"
+                      >
+                        <q-item-section>
+                          {{
+                            message.favorited
+                              ? $t("message.unfavorite")
+                              : $t("message.favorite")
+                          }}
+                        </q-item-section>
+                        <q-item-section side>
+                          <q-icon
+                            :name="
+                              message.favorited ? 'favorite' : 'favorite_border'
+                            "
+                            :color="message.favorited ? 'red-7' : ''"
+                            size="xs"
+                          ></q-icon>
+                        </q-item-section>
+                      </q-item>
+                      <q-separator></q-separator>
+                      <q-item
+                        v-close-popup
+                        clickable
+                        class="rounded q-px-xs"
+                        @click="toDeleteMessage(message)"
+                      >
+                        <q-item-section>
+                          {{ $t("message.delete") }}
+                        </q-item-section>
+                        <q-item-section side>
+                          <q-icon name="delete_forever" size="xs"></q-icon>
+                        </q-item-section>
+                      </q-item>
+                    </q-list>
+                  </q-menu>
+                </q-icon>
               </div>
-
-              <template #stamp>
-                <div class="row absolute-bottom-right">
-                  <q-space></q-space>
-
-                  <q-icon
-                    size="xs"
-                    name="more_horiz"
-                    class="q-pa-none text-caption text-weight-light cursor-pointer"
-                    style="opacity: 0.8; font-size: 14px"
-                  >
-                    <q-menu>
-                      <q-list dense style="min-width: 150px" class="q-pa-sm">
-                        <q-item
-                          v-close-popup
-                          clickable
-                          class="rounded q-px-xs"
-                          @click="toCopyContent(message.content)"
-                        >
-                          <q-item-section>
-                            {{ $t("message.copy") }}
-                          </q-item-section>
-                          <q-item-section side>
-                            <q-icon name="content_copy" size="xs"></q-icon>
-                          </q-item-section>
-                        </q-item>
-                        <q-item
-                          v-close-popup
-                          clickable
-                          class="rounded q-px-xs"
-                          @click="favorite(message)"
-                        >
-                          <q-item-section>
-                            {{
-                              message.favorited
-                                ? $t("message.unfavorite")
-                                : $t("message.favorite")
-                            }}
-                          </q-item-section>
-                          <q-item-section side>
-                            <q-icon
-                              :name="
-                                message.favorited
-                                  ? 'favorite'
-                                  : 'favorite_border'
-                              "
-                              :color="message.favorited ? 'red-7' : ''"
-                              size="xs"
-                            ></q-icon>
-                          </q-item-section>
-                        </q-item>
-                        <q-separator></q-separator>
-                        <q-item
-                          v-close-popup
-                          clickable
-                          class="rounded q-px-xs"
-                          @click="toDeleteMessage(message)"
-                        >
-                          <q-item-section>
-                            {{ $t("message.delete") }}
-                          </q-item-section>
-                          <q-item-section side>
-                            <q-icon name="delete_forever" size="xs"></q-icon>
-                          </q-item-section>
-                        </q-item>
-                      </q-list>
-                    </q-menu>
-                  </q-icon>
-                </div>
-              </template>
-            </q-chat-message>
-          </TransitionGroup>
+            </template>
+          </q-chat-message>
         </div>
       </q-page>
     </q-page-container>

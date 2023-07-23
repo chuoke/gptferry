@@ -109,24 +109,21 @@
 
 <script setup lang="ts">
 import { useAvatars } from "@/composables/avatars";
-import { type IChat } from "@/composables/chats";
-import type { IProviderModel } from "@/composables/providers";
+import { useChatFormDialog } from "@/composables/chat-form-dialog";
+import { useChats, type IChat, type IChatNew } from "@/composables/chats";
+import { useProviders } from "@/composables/providers";
 import { useI18n } from "vue-i18n";
 
-const props = defineProps<{
-  models: IProviderModel[];
-  chat?: IChat | null;
-}>();
-const emits = defineEmits(["save", "cancel"]);
 const modelValue = ref<Partial<IChat>>({});
 
 const { t: translate } = useI18n();
 
+const { chatModel, close: closeChatForm } = useChatFormDialog();
 watch(
-  () => props.chat,
+  () => chatModel.value,
   (val) => {
     if (val) {
-      modelValue.value = { ...props.chat };
+      modelValue.value = { ...chatModel.value };
     } else {
       modelValue.value = {};
     }
@@ -140,22 +137,49 @@ watch(
   },
   {
     immediate: true,
-  }
+  },
 );
 
 const isEdit = computed(
-  () => modelValue.value && "key" in modelValue.value && modelValue.value.key
+  () => modelValue.value && "key" in modelValue.value && modelValue.value.key,
 );
+const { find: findProvider } = useProviders();
+const provider = computed(() => {
+  return findProvider(chatModel.value?.provider_key as string);
+});
+const models = computed(() => {
+  return provider.value ? provider.value.models : [];
+});
 
 const { avatars } = useAvatars();
 function changeAvatar() {
   modelValue.value.avatar = avatars[Math.ceil(Math.random() * avatars.length)];
 }
 function save() {
-  emits("save", modelValue.value);
+  saveChat(modelValue.value);
 }
 
 function cancel() {
-  emits("cancel");
+  closeChatForm();
+}
+
+async function saveChat(val: Partial<IChat>) {
+  const {
+    add: addChat,
+    update: updateChat,
+    active: activeChat,
+  } = useChats(modelValue.value.server_key as string);
+
+  if ("key" in val && val.key) {
+    await updateChat(val as IChat);
+  } else {
+    const chat = await addChat({
+      ...(val as IChatNew),
+    });
+
+    activeChat(chat);
+  }
+
+  closeChatForm();
 }
 </script>
