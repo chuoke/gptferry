@@ -470,7 +470,7 @@ function checkApiKeySetted() {
 
 <style lang="scss">
 .message-list-container {
-  height: calc(100vh - 24px - 50px - 65px);
+  height: calc(100vh - 24px - 50px - 85px);
   width: 100%;
   display: flex;
   flex-direction: column-reverse;
