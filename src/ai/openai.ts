@@ -30,7 +30,7 @@ export default (): {
         messages,
         stream: true,
         max_tokens: options.max_tokens,
-        top_p:
+        temperature:
           "probability_mass" in options && isNumber(options.probability_mass)
             ? options.probability_mass
             : 1,
