@@ -381,7 +381,7 @@ async function doSendMessage(message: IMessage) {
       carries: carries,
       system_prompt: props.chat.system_prompt,
       probability_mass: props.chat.probability_mass,
-      abort_signal: abortController.value?.signal,
+      controller: abortController.value,
       onProgress: (content: string, options: { done: boolean }) => {
         messages[0].content += content;
         receivedMessage.content += content;
@@ -437,6 +437,7 @@ function handleReceiveError(err: any) {
     (receivingMessage && !receivingMessage.content.trim().length)
   ) {
     removeMessage(loadingMsgKey.value);
+    abortController.value?.abort();
   }
   loadingMsgKey.value = "";
 }
