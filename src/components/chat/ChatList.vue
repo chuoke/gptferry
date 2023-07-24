@@ -56,10 +56,15 @@
 import ChatListItem from "@/components/chat/ChatListItem.vue";
 import { useChatFormDialog } from "@/composables/chat-form-dialog";
 import type { IChat } from "@/composables/chats";
+import type { IServer } from "@/composables/servers";
 import { useQuasar } from "quasar";
 import { useI18n } from "vue-i18n";
 
-defineProps<{ chats: IChat[]; actvieKey: string }>();
+const props = defineProps<{
+  chats: IChat[];
+  actvieKey: string;
+  server: IServer;
+}>();
 const emits = defineEmits(["clicked", "deleted"]);
 
 const $q = useQuasar();
@@ -72,7 +77,7 @@ function handleClick(chat: IChat) {
 const { open: openChatForm } = useChatFormDialog();
 
 function toEditChat(chat: IChat) {
-  openChatForm(chat);
+  openChatForm({ ...chat, provider_key: props.server.provider_key });
 }
 
 function toDeleteChat(chat: IChat) {

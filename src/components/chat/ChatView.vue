@@ -135,6 +135,7 @@
 
               <chat-list
                 :chats="chats"
+                :server="server"
                 :actvie-key="activeChatKey"
                 @clicked="handleChatClicked"
                 @deleted="handleChatDeleted"
