@@ -65,7 +65,7 @@ export const useChats = (
   });
 
   const activeChatKey = computed(() => {
-    return activeChat.value ? activeChat.value.key : "";
+    return activeChat.value ? activeChat.value.key : "empty";
   });
 
   const add = async (chat: IChatNew): Promise<IChat> => {

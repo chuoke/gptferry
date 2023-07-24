@@ -5,7 +5,7 @@ import ChatView from "@/components/chat/ChatView.vue";
 import { useThemeMode } from "@/composables/theme-mode";
 import { useServers, type IServer } from "@/composables/servers";
 import ServerForm from "@/components/server/ServerForm.vue";
-import ChatForm from '@/components/chat/ChatForm.vue';
+import ChatForm from "@/components/chat/ChatForm.vue";
 import { useServerFormDialog } from "@/composables/server-form-dialog";
 import { useSettingDialog } from "@/composables/setting-dialog";
 import SettingView from "@/components/settings/SettingView.vue";
@@ -164,16 +164,24 @@ const { settingDialogOpen, open: openSettingDialog } = useSettingDialog();
 
     <q-page-container class="overflow-hidden">
       <q-page class="">
-        <transition-group name="fade">
-          <chat-view
+        <q-tab-panels
+          v-model="activeServerKey"
+          animated
+          transition-prev="fade"
+          transition-next="fade"
+          class="chat-views"
+        >
+          <q-tab-panel
             v-for="server of servers"
-            v-show="server.key === activeServerKey"
             :key="server.key"
-            :server="server"
-            @deleted="handleServerDeleted"
-          ></chat-view>
-        </transition-group>
-
+            :name="server.key"
+          >
+            <chat-view
+              :server="server"
+              @deleted="handleServerDeleted"
+            ></chat-view>
+          </q-tab-panel>
+        </q-tab-panels>
       </q-page>
     </q-page-container>
     <q-dialog v-model="chatFormDialogOpen">
@@ -203,6 +211,12 @@ const { settingDialogOpen, open: openSettingDialog } = useSettingDialog();
       right: 0px !important;
       width: 100% !important;
     }
+  }
+}
+
+.chat-views {
+  .q-tab-panel {
+    padding: 0;
   }
 }
 </style>

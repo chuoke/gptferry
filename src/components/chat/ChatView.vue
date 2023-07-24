@@ -8,6 +8,7 @@
     <q-drawer
       v-model="chatMenuDrawerOpen"
       show-if-above
+      persistent
       :breakpoint="600"
       side="left"
       class="rounded-tl-lg bg-second"
@@ -166,22 +167,27 @@
 
     <q-page-container>
       <q-page>
-        <transition-group name="fade">
-          <template v-if="chats.length">
+        <q-tab-panels
+          v-model="activeChatKey"
+          animated
+          transition-prev="fade"
+          transition-next="fade"
+          class="chat-views"
+        >
+          <q-tab-panel v-for="chat of chats" :key="chat.key" :name="chat.key">
             <message-view
-              v-for="chat of chats"
-              v-show="chat.key == activeChatKey"
-              :key="chat.key"
               :chat="chat"
               @open-drawer="openLeftDrawer"
             ></message-view>
-          </template>
+          </q-tab-panel>
+        </q-tab-panels>
 
+        <q-tab-panel name="empty">
           <MessageEmptyView
             v-show="!activeChatKey || 0 >= chats.length"
             key="empty"
           />
-        </transition-group>
+        </q-tab-panel>
       </q-page>
     </q-page-container>
   </q-layout>
