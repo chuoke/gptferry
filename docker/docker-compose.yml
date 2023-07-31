@@ -1,0 +1,22 @@
+version: "3.8"
+
+services:
+  # 1
+  app:
+    build:
+      context: ..
+      dockerfile: ./docker/Dockerfile
+    container_name: ${COMPOSE_PROJECT_NAME}
+    expose:
+      - 80
+
+  # 2
+  # app:
+  #   image: nginx:alpine
+  #   container_name: ${COMPOSE_PROJECT_NAME}
+  #   volumes:
+  #     - ../dist:/usr/share/nginx/html
+  #   expose:
+  #     - 80
+
+
