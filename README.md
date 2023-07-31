@@ -6,6 +6,9 @@
 [Web](https://gptferry.com)
 </div>
 
+![image](https://github.com/chuoke/gptferry/assets/17611457/cbf9cc83-1477-491c-899f-0436eb63df06)
+
+
 ## Features
 
 - [Vue 3](https://vuejs.org/) & [Quasar](https://quasar.dev/)
@@ -21,6 +24,7 @@
 ## Roadmap
 
 - [ ] Get a Claude API key and test it
+- [ ] Custom style
 
 ## Contributing
 
