@@ -1,5 +1,6 @@
 <template>
   <q-layout
+    :id="`chat-messages-${chat.key}`"
     ref="messagePageRef"
     view="hHh lpR fFr"
     container
@@ -70,7 +71,10 @@
                 >
                   <img :src="chat.avatar || currentServer?.avatar" />
                 </q-avatar>
-                <q-avatar v-else class="q-message-avatar q-message-avatar--sent">
+                <q-avatar
+                  v-else
+                  class="q-message-avatar q-message-avatar--sent"
+                >
                   <img
                     v-if="userProfile.avatar"
                     :src="userProfile.avatar"
@@ -79,18 +83,18 @@
                   <q-icon v-else name="account_circle"></q-icon>
                 </q-avatar>
               </template>
-  
+
               <div style="min-width: 50px; min-height: 10px">
                 <markdown-message
                   :text="message.content"
                   :loading="message.key === loadingMsgKey"
                 ></markdown-message>
               </div>
-  
+
               <template #stamp>
                 <div class="row absolute-bottom-right">
                   <q-space></q-space>
-  
+
                   <q-icon
                     size="xs"
                     name="more_horiz"
@@ -128,7 +132,9 @@
                           <q-item-section side>
                             <q-icon
                               :name="
-                                message.favorited ? 'favorite' : 'favorite_border'
+                                message.favorited
+                                  ? 'favorite'
+                                  : 'favorite_border'
                               "
                               :color="message.favorited ? 'red-7' : ''"
                               size="xs"
@@ -192,7 +198,7 @@
 import type { IChat } from "@/composables/chats";
 import { useMessages, type IMessage } from "@/composables/messages";
 import { useServers, type IServer } from "@/composables/servers";
-import { useQuasar, copyToClipboard, throttle } from "quasar";
+import { useQuasar, copyToClipboard, throttle, debounce } from "quasar";
 import { useAI } from "@/ai";
 import MarkdownMessage from "@/components/message/MarkdownMessage.vue";
 import { useServerFormDialog } from "@/composables/server-form-dialog";
@@ -200,6 +206,8 @@ import { useUserProfile } from "@/composables/user";
 import { useI18n } from "vue-i18n";
 import MessageInput from "@/components/message/MessageInput.vue";
 import MessageSearcher from "@/components/message/MessageSearcher.vue";
+import PhotoSwipeLightbox from "photoswipe/lightbox";
+import "photoswipe/style.css";
 
 const props = defineProps<{
   chat: IChat;
@@ -230,11 +238,31 @@ const currentServer = computed(() => {
 });
 
 const { userProfile } = useUserProfile();
+let lightbox: PhotoSwipeLightbox | null;
 
 onMounted(async () => {
-  console.log("mounted");
   await loadMoreMessages();
+
+  initLightBox();
 });
+
+onUnmounted(() => {
+  if (lightbox) {
+    lightbox.destroy();
+    lightbox = null;
+  }
+});
+
+const initLightBox = debounce(() => {
+  lightbox = new PhotoSwipeLightbox({
+    gallery: `#chat-messages-${props.chat.key} .content .img-url`,
+    // gallery: `#chat-messages-${props.chat.key} .content img`,
+    showHideAnimationType: "zoom",
+    pswpModule: () => import("photoswipe"),
+    bgOpacity: 0.9,
+  });
+  lightbox.init();
+}, 1000);
 
 const currentModel = computed(() => {
   return props.chat.model || currentServer.value?.model;

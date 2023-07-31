@@ -13,6 +13,8 @@ import MarkdownIt from "markdown-it";
 import hljs from "highlight.js";
 import "highlight.js/styles/atom-one-dark.css";
 import { copyToClipboard } from "quasar";
+import MermaidPlugin from "@/plugins/markdown-it/plugins/mermaid";
+import LatexPlugin from "@/plugins/markdown-it/plugins/latex";
 
 const props = withDefaults(
   defineProps<{
@@ -67,10 +69,9 @@ md = new MarkdownIt({
   },
 });
 
-function str2html(
-  str: string,
-  model: "render" | "renderInline" = "render"
-) {
+md.use(MermaidPlugin).use(LatexPlugin);
+
+function str2html(str: string, model: "render" | "renderInline" = "render") {
   // eslint-disable-next-line security/detect-object-injection
   return model in md ? md[model](str) : str;
 }
@@ -103,13 +104,6 @@ async function copyContent(str: string): Promise<boolean> {
   } catch (err) {
     return false;
   }
-
-  // .then(() => {
-  //   $q.notify({ message: "内容已复制" });
-  // })
-  // .catch(() => {
-  //   $q.notify({ message: "内容复制失败" });
-  // });
 }
 </script>
 
@@ -171,8 +165,9 @@ async function copyContent(str: string): Promise<boolean> {
   }
 
   img {
-    max-width: 550px;
-    height: 100%;
+    max-width: 100%;
+    max-height: 100%;
+    height: 500px;
     border-radius: 5px;
   }
 }
