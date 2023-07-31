@@ -19,6 +19,7 @@
 - Diagramming and charting by [Mermaid](https://mermaid.js.org/)
 - Privacy: The data is stored in your locally Browser's IndexedDB
 - I18n: English/简体中文
+- Copy / Retry / Stop / Favorite
 - ...
 
 ## Roadmap
